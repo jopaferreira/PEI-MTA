@@ -1,11 +1,11 @@
-# [Título do Projecto]
+# Musical Theory Trainer
 
-> Subtítulo ou tagline curta — o problema que resolve e para quem.
+> Musical Theory Trainer com Geração Procedimental e Avaliação Automática
 
-**Estudante:** [Nome] · [Número]  
+**Estudante:** João Paulo Ramos Ferreira · 1800238
 **Orientador:** Pedro Pestana  
 **UC:** Projecto de Engenharia Informática · Universidade Aberta · 2025/26  
-**Repositório:** [URL deste repositório]
+**Repositório:** https://github.com/jopaferreira/PEI-MTA 
 
 ---
 
