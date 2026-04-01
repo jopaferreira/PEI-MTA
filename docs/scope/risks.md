@@ -1,6 +1,6 @@
 # Gestão de Riscos
 
-**Projecto:** [Título]  
+**Projecto:** Musical Theory Trainer com Geração Procedimental e Avaliação Automática
 **Versão:** 1.0 · [Data]
 
 ---
