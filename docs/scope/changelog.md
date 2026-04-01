@@ -8,17 +8,17 @@
 
 ## Sem. 1 · 17–21 mar
 
-**Feito:** [O que foi concluído esta semana]  
-**Bloqueou:** [O que impediu progresso, ou "Nada"]  
-**Próxima semana:** [O que está planeado]
+**Feito:** Esboço da Proposta Inicial  
+**Bloqueou:** Nada
+**Próxima semana:** Aperfeiçoamento do Esboço
 
 ---
 
 ## Sem. 2 · 24–28 mar
 
-**Feito:**  
+**Feito:**  Proposta Inicial. Submissão da Proposta Inicial. Professor aceitou orientar o projeto.
 **Bloqueou:**  
-**Próxima semana:**
+**Próxima semana:** Configuração do repositório GitHub com estrutura definida.
 
 ---
 
