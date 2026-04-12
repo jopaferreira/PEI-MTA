@@ -1,0 +1,14 @@
+# DEPENDÊNCIAS DO BACKEND (PYTHON)
+# Comando para instalar: pip install -r requirements.txt
+
+# Framework web utilizada para criar a API e as respetivas rotas
+fastapi==0.103.1
+
+# Servidor web que executa a aplicação FastAPI
+uvicorn==0.23.2
+
+# Biblioteca para validação de dados (garante que os dados enviados pelo HTML estão corretos)
+pydantic==2.3.0
+
+# ORM (Object-Relational Mapper) que permite utilizar classes Python para gerir e comunicar com a Base de Dados SQLite
+SQLAlchemy==2.0.20
