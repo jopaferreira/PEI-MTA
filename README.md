@@ -119,4 +119,4 @@ Abrir o ficheiro `src/frontend/index.html` diretamente no browser ou utilizar um
 
 ---
 
-*Última actualização: 4 de abril de 2026 · Sem. 3*
+*Última actualização: 12 de abril de 2026 · Sem. 4*
