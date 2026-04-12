@@ -1,0 +1,134 @@
+/* ESTILOS GERAIS */
+
+/* Configuração global: centra o texto, define o tipo de letra e a cor do fundo */
+body { 
+    font-family: sans-serif; 
+    text-align: center; 
+    margin-top: 40px; 
+    background-color: #f9f9f9; 
+}
+
+/* Contentor principal da interface (estilo "cartão" branco flutuante com sombra) */
+.card { 
+    background: white; 
+    max-width: 600px; 
+    margin: 0 auto; /* Centra o cartão horizontalmente */
+    padding: 20px; 
+    border-radius: 8px; 
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+}
+
+/* Desenho da pauta musical (VexFlow) */
+#pauta { 
+    display: flex; 
+    justify-content: center; /* Garante que a pauta fica ao centro */
+    height: 160px; 
+    margin: 20px 0; 
+}
+
+/* Contentor que agrupa os botões de ação na horizontal com espaçamento */
+.botoes { 
+    gap: 10px; 
+    display: flex; 
+    justify-content: center; 
+    margin-top: 10px; 
+}
+
+/* Estilo partilhado por todos os botões */
+button { 
+    padding: 10px 20px; 
+    font-size: 15px; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+}
+
+/* Cores específicas para cada tipo de ação */
+.btn-primary { background-color: #008CBA; color: white; } /* Azul para ações neutras (Gerar) */
+.btn-success { background-color: #4CAF50; color: white; } /* Verde para ações positivas (Tocar) */
+.btn-warning { background-color: #f0ad4e; color: white; } /* Laranja para ações de submissão (Responder) */
+
+/* Estilo visual para indicar que o utilizador não pode clicar no botão no momento */
+button:disabled { 
+    background-color: #ccc; 
+    cursor: not-allowed; 
+}
+
+/* Apresentação das métricas vindas da Base de Dados */
+#dashboard { 
+    margin-top: 20px; 
+    font-size: 14px; 
+    color: #555; 
+}
+
+
+/* ESTILOS DO SPLASH SCREEN */
+
+/* Sobreposição de ecrã inteiro */
+#splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(135deg, #08427b 0%, #1168bd 100%); /* Fundo azul */
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Garante que fica por cima de tudo */
+    transition: opacity 0.8s ease-out, visibility 0.8s ease-out; /* Transição suave no desaparecimento */
+}
+
+/* Animação da entrada do texto incial - de baixo para cima */
+.splash-content {
+    text-align: center;
+    animation: fadeIn 1s ease-out;
+}
+
+/* Tipografia principal do Splash Screen */
+.splash-title {
+    font-size: 2.8rem;
+    margin-bottom: 10px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
+
+.splash-subtitle {
+    font-size: 1.2rem;
+    opacity: 0.85;
+    margin-bottom: 40px;
+}
+
+/* Ícone rotativo */
+.spinner {
+    width: 50px;
+    height: 50px;
+    margin: 0 auto;
+    border: 4px solid rgba(255, 255, 255, 0.2); /* Borda transparente */
+    border-top: 4px solid white; /* Apenas um bordo pintado para criar a ilusão de movimento */
+    border-radius: 50%; /* Torna o quadrado num círculo perfeito */
+    animation: spin 1s linear infinite; /* Roda infinitamente */
+}
+
+/* ANIMAÇÕES CSS */
+
+/* Define a rotação de 0 a 360 graus para o Spinner */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Define o fade in levantando os elementos ligeiramente */
+@keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* ESTADOS CONTROLADOS PELO JAVASCRIPT */
+
+/* Classe injetada pelo app.js (após 2s) para fazer o ecrã desaparecer */
+#splash-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+}

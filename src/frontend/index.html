@@ -1,0 +1,42 @@
+<!--Single Page Application que comunica com o backend, desenha pautas e reproduz os sons.-->
+
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Musical Theory Trainer</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/vexflow@4.2.2/build/cjs/vexflow.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    
+    <div id="splash-screen">
+        <div class="splash-content">
+            <h1 class="splash-title">🎵 Musical Theory Trainer</h1>
+            <p class="splash-subtitle">A afinar os instrumentos...</p>
+            <div class="spinner"></div> </div>
+    </div>
+
+    <div class="card">
+        <h2>Treinador de Teoria Musical</h2>
+        
+        <p id="status">A aguardar exercício...</p>
+        
+        <div id="pauta"></div>
+
+        <div class="botoes">
+            <button id="btnGerar" class="btn-primary">🔄 Novo Exercício</button>
+            <button id="btnTocar" class="btn-success" disabled>▶ Tocar</button>
+            <button id="btnResponder" class="btn-warning" disabled>📝 Simular Resposta Certa</button>
+        </div>
+
+        <div id="dashboard">Taxa de Acerto: Carregue num exercício...</div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
