@@ -17,24 +17,24 @@
 ## Sem. 2 · 24–28 mar
 
 **Feito:**  Proposta Inicial. Submissão da Proposta Inicial. Professor aceitou orientar o projeto.
-**Bloqueou:**  
+**Bloqueou:**  Nada
 **Próxima semana:** Configuração do repositório GitHub com estrutura definida.
 
 ---
 
 ## Sem. 3 · 31 mar–4 abr
 
-**Feito:**  
-**Bloqueou:**  
-**Próxima semana:**
+**Feito:**  Configuração da arquitetura (C4 níveis 1 e 2). Configuração do repositório. Implementação base (FastAPI e SQLite).
+**Bloqueou:**  Nada
+**Próxima semana:** Foco nos Wireframes.
 
 ---
 
 ## Sem. 4 · 7–11 abr
 
-**Feito:**  
-**Bloqueou:**  
-**Próxima semana:**
+**Feito:**  Levantamento de requisitos (MoSCoW) e documentação do código-fonte.
+**Bloqueou:**  Nada
+**Próxima semana:** Desenho de Wireframes para a interface gráfica e início da lógica de geração musical.
 
 ---
 
