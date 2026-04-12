@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+env/
+venv/
+
+# Base de Dados Local
+*.db
+teoria_musical.db
+
+# IDEs
+.vscode/
+.idea/
