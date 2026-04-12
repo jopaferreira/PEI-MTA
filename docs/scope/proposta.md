@@ -86,7 +86,6 @@ Após a avaliação de uma resposta, o sistema grava automaticamente na base de 
 
 **Utilizadores:**
 - Estudantes de música ou autodidatas —  acedem à aplicação via browser, leem as pautas, ouvem o áudio e submetem as respostas aos exercícios teóricos
-- [Tipo de utilizador 2] — [o que fazem com o sistema]
 
 **Sistemas externos:**
 - CDNs estáticos para scripts — [como o sistema interage com ele]
