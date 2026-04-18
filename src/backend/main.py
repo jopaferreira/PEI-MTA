@@ -11,7 +11,7 @@ import random
 
 # Importa modelo da Base de Dados
 from models import engine, Base, Tentativa, Utilizador
-from music_logic import gerar_intervalo_aleatorio
+from music_logic import gerar_intervalo_aleatorio, gerar_escala_aleatoria
 
 # Sessões para comunicação com o SQLite
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -50,20 +50,23 @@ class TentativaCreate(BaseModel):
 # Gera Exercício 
 @app.get("/api/exercicio/novo")
 def gerar_exercicio():
-    # Chama o nosso novo motor procedimental!
-    exercicio = gerar_intervalo_aleatorio()
+    # Sorteio: 0 para Intervalo, 1 para Escala
+    if random.choice([0, 1]) == 0:
+        exercicio = gerar_intervalo_aleatorio()
+        mensagem = "Qual é este intervalo?"
+    else:
+        exercicio = gerar_escala_aleatoria()
+        mensagem = "Qual é esta escala?"
     
     return {
         "status": "sucesso",
-        "mensagem": f"Qual é este intervalo?",
+        "mensagem": mensagem,
         "tipo_exercicio": exercicio["tipo_exercicio"],
         "detalhe": exercicio["detalhe"],
         "notas": exercicio["notas"],
-        "opcoes": exercicio["opcoes"] # Enviamos as opções de escolha múltipla para o Frontend
+        "opcoes": exercicio["opcoes"]
     }
 
-# Grava Resposta 
-@app.post("/api/tentativas/")
 # Grava Resposta 
 @app.post("/api/tentativas/")
 def guardar_tentativa(tentativa: TentativaCreate, db: Session = Depends(get_db)):

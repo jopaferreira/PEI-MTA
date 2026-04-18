@@ -1,72 +1,107 @@
-# Motor - Geração musical procedimental - Calcula intervalos, escalas e tonalidades através de meios tons
+# Motor - Geração musical procedimental com Ortografia Diatónica
 
 import random
 
-# Dicionário expandido (1 oitava inteira + notas agudas para suportar a matemática dos intervalos)
-NOTAS_CROMATICAS = [
-    {"vexflow": "c/4", "tone": "C4"},   # Índice 0
-    {"vexflow": "c#/4", "tone": "C#4"}, # Índice 1
-    {"vexflow": "d/4", "tone": "D4"},   # Índice 2
-    {"vexflow": "d#/4", "tone": "D#4"}, # Índice 3
-    {"vexflow": "e/4", "tone": "E4"},   # Índice 4
-    {"vexflow": "f/4", "tone": "F4"},   # Índice 5
-    {"vexflow": "f#/4", "tone": "F#4"}, # Índice 6
-    {"vexflow": "g/4", "tone": "G4"},   # Índice 7
-    {"vexflow": "g#/4", "tone": "G#4"}, # Índice 8
-    {"vexflow": "a/4", "tone": "A4"},   # Índice 9
-    {"vexflow": "a#/4", "tone": "A#4"}, # Índice 10
-    {"vexflow": "b/4", "tone": "B4"},   # Índice 11
-    {"vexflow": "c/5", "tone": "C5"},   # Índice 12
-    {"vexflow": "c#/5", "tone": "C#5"}, # Índice 13
-    {"vexflow": "d/5", "tone": "D5"},   # Índice 14
-    {"vexflow": "d#/5", "tone": "D#5"}, # Índice 15
-    {"vexflow": "e/5", "tone": "E5"},   # Índice 16
-    {"vexflow": "f/5", "tone": "F5"}    # Índice 17
+# O Dicionário meios tons
+# Mapeia a posição do som para a nota correta
+DICIONARIO_ORTOGRAFICO = {
+    0: {'c': {"vexflow": "c/4", "tone": "C4"}, 'b': {"vexflow": "b#/3", "tone": "B#3"}},
+    1: {'c': {"vexflow": "c#/4", "tone": "C#4"}, 'd': {"vexflow": "db/4", "tone": "Db4"}},
+    2: {'d': {"vexflow": "d/4", "tone": "D4"}},
+    3: {'d': {"vexflow": "d#/4", "tone": "D#4"}, 'e': {"vexflow": "eb/4", "tone": "Eb4"}},
+    4: {'e': {"vexflow": "e/4", "tone": "E4"}, 'f': {"vexflow": "fb/4", "tone": "Fb4"}},
+    5: {'f': {"vexflow": "f/4", "tone": "F4"}, 'e': {"vexflow": "e#/4", "tone": "E#4"}},
+    6: {'f': {"vexflow": "f#/4", "tone": "F#4"}, 'g': {"vexflow": "gb/4", "tone": "Gb4"}},
+    7: {'g': {"vexflow": "g/4", "tone": "G4"}},
+    8: {'g': {"vexflow": "g#/4", "tone": "G#4"}, 'a': {"vexflow": "ab/4", "tone": "Ab4"}},
+    9: {'a': {"vexflow": "a/4", "tone": "A4"}},
+    10: {'a': {"vexflow": "a#/4", "tone": "A#4"}, 'b': {"vexflow": "bb/4", "tone": "Bb4"}},
+    11: {'b': {"vexflow": "b/4", "tone": "B4"}, 'c': {"vexflow": "cb/5", "tone": "Cb5"}},
+    12: {'c': {"vexflow": "c/5", "tone": "C5"}, 'b': {"vexflow": "b#/4", "tone": "B#4"}},
+    13: {'c': {"vexflow": "c#/5", "tone": "C#5"}, 'd': {"vexflow": "db/5", "tone": "Db5"}},
+    14: {'d': {"vexflow": "d/5", "tone": "D5"}},
+    15: {'d': {"vexflow": "d#/5", "tone": "D#5"}, 'e': {"vexflow": "eb/5", "tone": "Eb5"}},
+    16: {'e': {"vexflow": "e/5", "tone": "E5"}, 'f': {"vexflow": "fb/5", "tone": "Fb5"}},
+    17: {'f': {"vexflow": "f/5", "tone": "F5"}, 'e': {"vexflow": "e#/5", "tone": "E#5"}},
+    18: {'f': {"vexflow": "f#/5", "tone": "F#5"}, 'g': {"vexflow": "gb/5", "tone": "Gb5"}},
+    19: {'g': {"vexflow": "g/5", "tone": "G5"}},
+    20: {'g': {"vexflow": "g#/5", "tone": "G#5"}, 'a': {"vexflow": "ab/5", "tone": "Ab5"}},
+    21: {'a': {"vexflow": "a/5", "tone": "A5"}}
+}
+
+# Alfabeto musical
+SEQUENCIA_LETRAS = ['c', 'd', 'e', 'f', 'g', 'a', 'b']
+
+# Notas base limpas para gerar os exercícios
+NOTAS_BASE_DISPONIVEIS = [
+    {"som": 0, "letra": 0}, # Dó
+    {"som": 2, "letra": 1}, # Ré
+    {"som": 5, "letra": 3}, # Fá
+    {"som": 7, "letra": 4}, # Sol
+    {"som": 9, "letra": 5}  # Lá
 ]
 
-def gerar_intervalo_aleatorio():
-    """
-    Gera duas notas musicais separadas por um intervalo específico calculado matematicamente.
-    """
-    # Escolhe uma nota base aleatória, limitada ao índice 5 para a 2ª nota não sair da lista
-    index_base = random.randint(0, 5)
-    nota_base = NOTAS_CROMATICAS[index_base]
+# Função para obter a nota correta a partir do dicionário, usando o indice do som e o indice da letra
+def obter_nota_ortografica(indice_absoluto, indice_letra):
+    letra_desejada = SEQUENCIA_LETRAS[indice_letra % 7]
+    opcoes_som = DICIONARIO_ORTOGRAFICO.get(indice_absoluto, {})
     
-    # TODOS os intervalos possíveis dentro de uma oitava e a sua distância em meios tons
+    if letra_desejada in opcoes_som:
+        return opcoes_som[letra_desejada]
+    else:
+        return list(opcoes_som.values())[0]
+
+def gerar_intervalo_aleatorio():
+    base = random.choice(NOTAS_BASE_DISPONIVEIS)
+    
+    # Mapeia a soma de meios tons e o avanço no alfabeto exigido!
     tipos_intervalos = {
-        "2ª Menor": 1,
-        "2ª Maior": 2,
-        "3ª Menor": 3,
-        "3ª Maior": 4,
-        "4ª Perfeita": 5,
-        "Trítono": 6,
-        "5ª Perfeita": 7,
-        "6ª Menor": 8,
-        "6ª Maior": 9,
-        "7ª Menor": 10,
-        "7ª Maior": 11,
-        "Oitava": 12
+        "2ª Menor": (1, 1), "2ª Maior": (2, 1),
+        "3ª Menor": (3, 2), "3ª Maior": (4, 2),
+        "4ª Perfeita": (5, 3), "Trítono": (6, 3), 
+        "5ª Perfeita": (7, 4), 
+        "6ª Menor": (8, 5), "6ª Maior": (9, 5),
+        "7ª Menor": (10, 6), "7ª Maior": (11, 6),
+        "Oitava": (12, 7)
     }
     
-    # 1. Sorteia o intervalo CORRETO
-    nome_intervalo_correto, meio_tom = random.choice(list(tipos_intervalos.items()))
+    nome_intervalo, regras = random.choice(list(tipos_intervalos.items()))
+    meios_tons, saltos_letra = regras
     
-    # Calcula a nota alvo somando os meios tons
-    nota_alvo = NOTAS_CROMATICAS[index_base + meio_tom]
+    nota_base = obter_nota_ortografica(base["som"], base["letra"])
+    nota_alvo = obter_nota_ortografica(base["som"] + meios_tons, base["letra"] + saltos_letra)
     
-    # 2. Lógica de múltipla escolha (1 certa + 3 erradas)
     todas_chaves = list(tipos_intervalos.keys())
-    todas_chaves.remove(nome_intervalo_correto) # Remove a certa da lista temporariamente
-    opcoes_erradas = random.sample(todas_chaves, 3) # Sorteia 3 opções erradas
-    
-    # Junta a certa com as erradas e baralha tudo
-    opcoes_resposta = opcoes_erradas + [nome_intervalo_correto]
+    todas_chaves.remove(nome_intervalo)
+    opcoes_resposta = random.sample(todas_chaves, 3) + [nome_intervalo]
     random.shuffle(opcoes_resposta)
     
-    # Devolve o exercício estruturado
     return {
-        "tipo_exercicio": "Intervalo",
-        "detalhe": nome_intervalo_correto,
-        "notas": [nota_base, nota_alvo],
-        "opcoes": opcoes_resposta
+        "tipo_exercicio": "Intervalo", "detalhe": nome_intervalo,
+        "notas": [nota_base, nota_alvo], "opcoes": opcoes_resposta
+    }
+
+def gerar_escala_aleatoria():
+    base = random.choice(NOTAS_BASE_DISPONIVEIS)
+    
+    tipos_escalas = {
+        "Escala Maior": [0, 2, 4, 5, 7, 9, 11, 12],
+        "Escala Menor Natural": [0, 2, 3, 5, 7, 8, 10, 12],
+        "Escala Menor Harmónica": [0, 2, 3, 5, 7, 8, 11, 12]
+    }
+    
+    nome_escala_correta, padrao_semitons = random.choice(list(tipos_escalas.items()))
+    
+    notas_escala = []
+    for salto_alfabeto, semitons in enumerate(padrao_semitons):
+        # Avança o som e avança a letra do alfabeto ao longo da escala
+        nota = obter_nota_ortografica(base["som"] + semitons, base["letra"] + salto_alfabeto)
+        notas_escala.append(nota)
+        
+    opcoes_resposta = list(tipos_escalas.keys())
+    random.shuffle(opcoes_resposta)
+    
+    return {
+        "tipo_exercicio": "Escala", "detalhe": nome_escala_correta,
+        "notas": notas_escala, "opcoes": opcoes_resposta
     }
