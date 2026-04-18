@@ -18,25 +18,24 @@ let exercicioAtual = null; // Guarda os dados completos do exercício a decorrer
 // COMUNICAÇÃO COM A API E LÓGICA DE JOGO
 // Pede um Novo Exercício ao Python
 document.getElementById("btnGerar").addEventListener("click", async () => {
-    // Faz um pedido HTTP GET à rota do FastAPI
+    // Limpa a interface
+    document.getElementById("opcoes-resposta").innerHTML = "";
+    divPauta.innerHTML = "";
+
     const resposta = await fetch("http://127.0.0.1:8000/api/exercicio/novo");
     const dados = await resposta.json();
     
-    // Atualiza o estado da aplicação com os dados recebidos
     melodiaAtual = dados.notas;
     exercicioAtual = dados; 
     
-    // Atualiza a mensagem de interface
     const status = document.getElementById("status");
     status.innerText = dados.mensagem;
-    status.style.color = "#333"; // Reset à cor base do texto
+    status.style.color = "#333"; 
     
-    // Desbloqueia o botão de tocar áudio
     document.getElementById("btnTocar").disabled = false;
 
-    // Aciona as funções visuais e dinâmicas
     desenharPauta(melodiaAtual);
-    criarBotoesResposta(dados.opcoes, dados.detalhe); // Injeta os botões das opções no ecrã
+    criarBotoesResposta(dados.opcoes, dados.detalhe); 
     atualizarDashboard();
 });
 
@@ -109,22 +108,45 @@ async function atualizarDashboard() {
 // RENDERIZAÇÃO VISUAL (VEXFLOW) E SONORA (TONE.JS)
 // Desenho da Pauta Musical
 function desenharPauta(dadosMelodia) {
-    divPauta.innerHTML = ""; // Limpa a pauta gráfica anterior do ecrã
+    divPauta.innerHTML = ""; 
     
-    // Prepara o "quadro" em formato SVG e define o tamanho
+    // Largura aumentada para 550px para caberem os acidentes
+    const larguraPauta = dadosMelodia.length > 2 ? 550 : 250;
+    
     const renderer = new VF.Renderer(divPauta, VF.Renderer.Backends.SVG);
-    renderer.resize(400, 150);
+    renderer.resize(larguraPauta + 50, 150);
     const context = renderer.getContext();
     
-    // Cria as 5 linhas, adiciona a Clave de Sol e o Compasso (4/4)
-    const stave = new VF.Stave(10, 0, 350).addClef("treble").addTimeSignature("4/4").setContext(context).draw();
+    const stave = new VF.Stave(10, 0, larguraPauta).addClef("treble").addTimeSignature("4/4").setContext(context).draw();
 
-    // Mapeia os dados devolvidos pelo Python para "Notas" gráficas que o VexFlow entende
-    const vexNotes = dadosMelodia.map(nota => new VF.StaveNote({ keys: [nota.vexflow], duration: "q" }));
+    const vexNotes = dadosMelodia.map(nota => {
+        const staveNote = new VF.StaveNote({ keys: [nota.vexflow], duration: "q" });
+        
+        // Verifica qual o acidente necessário
+        let sinal = null;
+        if (nota.vexflow.includes("#")) {
+            sinal = new VF.Accidental("#");
+        } else if (nota.vexflow.charAt(1) === "b") { 
+            sinal = new VF.Accidental("b");
+        }
+        
+        // Aplica o acidente - suporta VexFlow antigo e moderno
+        if (sinal) {
+            try {
+                // Tenta a sintaxe moderna (VexFlow 4+)
+                staveNote.addModifier(sinal, 0); 
+            } catch (e) {
+                // Se falhar, resgata com a sintaxe clássica (VexFlow 1.x / 3.x)
+                staveNote.addModifier(0, sinal); 
+            }
+        }
+        
+        return staveNote;
+    });
     
-    // Agrupa as notas numa "Voz", formata e desenha-as em cima das linhas criadas
     const voice = new VF.Voice({ num_beats: dadosMelodia.length, beat_value: 4 }).addTickables(vexNotes);
-    new VF.Formatter().joinVoices([voice]).format([voice], 300);
+    
+    new VF.Formatter().joinVoices([voice]).format([voice], larguraPauta - 50);
     voice.draw(context, stave);
 }
 
