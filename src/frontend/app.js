@@ -8,15 +8,14 @@ window.addEventListener('load', () => {
     }, 2000);
 });
 
-
 // VARIÁVEIS GERAIS E CONFIGURAÇÕES
 const VF = Vex.Flow; // Atalho para facilitar a chamada da biblioteca VexFlow
 const divPauta = document.getElementById("pauta"); // Elemento HTML onde a pauta será desenhada
 let melodiaAtual = []; // Variável para guardar temporariamente as notas devolvidas pela API
 let synth; // Variável para guardar o sintetizador de áudio (Tone.js)
+let exercicioAtual = null; // Guarda os dados completos do exercício a decorrer
 
-
-// COMUNICAÇÃO COM A API (BACKEND)
+// COMUNICAÇÃO COM A API E LÓGICA DE JOGO
 // Pede um Novo Exercício ao Python
 document.getElementById("btnGerar").addEventListener("click", async () => {
     // Faz um pedido HTTP GET à rota do FastAPI
@@ -25,43 +24,81 @@ document.getElementById("btnGerar").addEventListener("click", async () => {
     
     // Atualiza o estado da aplicação com os dados recebidos
     melodiaAtual = dados.notas;
-    document.getElementById("status").innerText = dados.mensagem;
+    exercicioAtual = dados; 
     
-    // Desbloqueia os botões de ação
+    // Atualiza a mensagem de interface
+    const status = document.getElementById("status");
+    status.innerText = dados.mensagem;
+    status.style.color = "#333"; // Reset à cor base do texto
+    
+    // Desbloqueia o botão de tocar áudio
     document.getElementById("btnTocar").disabled = false;
-    document.getElementById("btnResponder").disabled = false;
 
-    // Aciona as funções visuais e de métricas
+    // Aciona as funções visuais e dinâmicas
     desenharPauta(melodiaAtual);
+    criarBotoesResposta(dados.opcoes, dados.detalhe); // Injeta os botões das opções no ecrã
     atualizarDashboard();
 });
 
-// Grava a resposta na Base de Dados
-document.getElementById("btnResponder").addEventListener("click", async () => {
-    // Cria a estrutura exigida pelo Backend
-    const payload = {
-        tipo_exercicio: "Escala",
-        detalhe: "Escala Maior",
-        resposta_dada: "Opção Correta",
-        correta: true
-    };
+// Cria Botões
+function criarBotoesResposta(opcoes, respostaCerta) {
+    const divOpcoes = document.getElementById("opcoes-resposta");
+    divOpcoes.innerHTML = ""; // Limpa os botões do exercício anterior
 
-    // Pedido HTTP POST e envia a resposta em formato JSON
-    await fetch("http://127.0.0.1:8000/api/tentativas/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+    // Para cada opção enviada pelo Python, cria um botão HTML
+    opcoes.forEach(opcao => {
+        const btn = document.createElement("button");
+        btn.innerText = opcao;
+        btn.className = "btn-warning"; // Aplica o estilo laranja base definido no CSS
+
+        // Avaliação ao clicar numa resposta
+        btn.addEventListener("click", async () => {
+            const acertou = (opcao === respostaCerta);
+            const todosBotoes = divOpcoes.querySelectorAll("button");
+
+            // Feedback Visual imediato através das cores dos botões
+            todosBotoes.forEach(b => {
+                b.disabled = true; // Bloqueia botões para evitar duplo clique
+                if (b.innerText === respostaCerta) {
+                    b.style.backgroundColor = "#4CAF50"; // Verde na resposta certa
+                } else if (b === btn && !acertou) {
+                    b.style.backgroundColor = "#f44336"; // Vermelho na resposta errada
+                }
+            });
+
+            // Atualiza a mensagem de texto com feedback
+            const status = document.getElementById("status");
+            if (acertou) {
+                status.innerText = "✨ Resposta Correta!";
+                status.style.color = "#4CAF50";
+            } else {
+                status.innerText = `❌ Errado! A resposta certa era: ${respostaCerta}.`;
+                status.style.color = "#f44336";
+            }
+
+            // Envia o resultado da tentativa para o Python gravar na Base de Dados
+            const payload = {
+                tipo_exercicio: exercicioAtual.tipo_exercicio,
+                detalhe: respostaCerta,
+                resposta_dada: opcao,
+                correta: acertou
+            };
+
+            await fetch("http://127.0.0.1:8000/api/tentativas/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+
+            atualizarDashboard(); // Pede ao servidor a taxa de acerto atualizada
+        });
+
+        divOpcoes.appendChild(btn); // Adiciona o botão à página
     });
-
-    // Atualiza a interface gráfica e bloqueia o botão para evitar respostas duplicadas
-    document.getElementById("status").innerText = "Resposta gravada com sucesso!";
-    document.getElementById("btnResponder").disabled = true;
-    atualizarDashboard(); // Recalcula a percentagem após esta nova resposta
-});
+}
 
 // Obtém e Atualiza as Métricas para o Dashboard
 async function atualizarDashboard() {
-    // Obtém os resultados do cálculo e exibe no ecrã
     const resposta = await fetch("http://127.0.0.1:8000/api/dashboard/");
     const dados = await resposta.json();
     document.getElementById("dashboard").innerText = 
@@ -96,7 +133,7 @@ document.getElementById("btnTocar").addEventListener("click", async () => {
     // O Tone.start() é obrigatório pelas políticas de segurança dos browsers para permitir áudio
     await Tone.start();
     
-    // Se o sintetizador ainda não estiver criado, cria-oe liga-o às colunas do computador
+    // Se o sintetizador ainda não estiver criado, cria-o e liga-o às colunas do computador
     if (!synth) synth = new Tone.Synth().toDestination();
     
     const tempoAtual = Tone.now();
