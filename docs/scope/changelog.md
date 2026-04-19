@@ -40,9 +40,9 @@
 
 ## Sem. 5 · 14–17 abr
 
-**Feito:**  
-**Bloqueou:**  
-**Próxima semana:**
+**Feito:** Implementação do núcleo para geração de Intervalos e Escalas. Integração do VexFlow/Tone.js na interface, desenho de wireframes e redação dos ADRs.
+**Bloqueou:** Prblemas para apresentação gráfica de acidentes (sustenidos, bemóis e bequadros) no VexFlow (resolvido com adaptação da API no Frontend).
+**Próxima semana:** Pausa para consolidação e preparação do material para a Demo Interna.
 
 ---
 
