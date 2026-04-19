@@ -9,9 +9,9 @@ window.addEventListener('load', () => {
 });
 
 // VARIÁVEIS GERAIS E CONFIGURAÇÕES
-const API_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost"
-    ? "http://127.0.0.1:8000"   // Desenvolvimento local
-    : window.location.origin;    // Produção: usa automaticamente o domínio atual
+const API_URL = (window.location.port === "5500")
+    ? "http://127.0.0.1:8000"   // Live Server → aponta para o backend local
+    : window.location.origin;    // Produção (Render) → mesmo domínio
 const VF = Vex.Flow; // Atalho para facilitar a chamada da biblioteca VexFlow
 const divPauta = document.getElementById("pauta"); // Elemento HTML onde a pauta será desenhada
 let melodiaAtual = []; // Variável para guardar temporariamente as notas devolvidas pela API
