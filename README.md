@@ -45,7 +45,7 @@
 ### Pré-requisitos
 
 ```text
-- Python 3.10 ou superior
+- Python 3.10 ou superior (ambiente de desenvolvimento fixado na versão 3.11.9)
 - Browser web moderno (Chrome, Firefox, Edge)
 ```
 
