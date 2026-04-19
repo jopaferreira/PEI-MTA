@@ -58,7 +58,7 @@ def gerar_intervalo_aleatorio():
     tipos_intervalos = {
         "2ª Menor": (1, 1), "2ª Maior": (2, 1),
         "3ª Menor": (3, 2), "3ª Maior": (4, 2),
-        "4ª Perfeita": (5, 3), "Trítono": (6, 3), 
+        "4ª Perfeita": (5, 3), "4ª Aumentada": (6, 3), 
         "5ª Perfeita": (7, 4), 
         "6ª Menor": (8, 5), "6ª Maior": (9, 5),
         "7ª Menor": (10, 6), "7ª Maior": (11, 6),
