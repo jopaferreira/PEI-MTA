@@ -23,8 +23,8 @@
 <!-- Ser específico: não "o login está feito" mas "autenticação por email/password com JWT, sessão persistente em localStorage." -->
 
 - [x] **Estrutura de Base de Dados (SQLite)** — Definição do ORM via SQLAlchemy com as tabelas de Utilizador e Tentativas para suporte à persistência de resultados.
-- [x] **Motor da API (Backend)** — Rotas iniciais configuradas em Python/FastAPI (gravação de respostas e endpoints para dashboard de métricas).
-- [x] **Interface Base (Frontend)** — Estrutura da Single Page Application (HTML/CSS/JS) com ligação preliminar aos endpoints da API.
+- [x] **Motor da API (Backend)** — Geração procedimental implementada para exercícios de **Intervalos** e **Escalas**.
+- [x] **Interface Base (Frontend)** — SPA responsiva com integração do VexFlow (desenho de pautas e acidentes) e Tone.js (reprodução áudio).
 
 ---
 
@@ -32,9 +32,9 @@
 
 <!-- O que falta do MVP e porquê. Se algo foi descontinuado, explicar a decisão. -->
 
-- [ ] **Integração VexFlow e Tone.js** — Falta consolidar a renderização dinâmica da pauta musical e a sintetização do áudio correspondente aos exercícios gerados. (Previsto para Semanas 11-12)
-- [ ] **Lógica de Geração Musical** — Implementação do motor procedimental avançado no Backend para criar dinamicamente as escalas, intervalos e tonalidades. (Previsto para Semanas 9-10)
-- [ ] **Sistema de Interação e Avaliação** — Lógica de verificação da resposta certa/errada com bloqueio de botões e justificação pedagógica em ecrã.
+- [ ] **Exercícios de Tonalidades** — Implementação da geração procedimental de armações de clave no Backend (Previsto para Semanas 9-10).
+- [ ] **Filtro de Exercícios** — Adição de controlos na interface para o utilizador poder escolher o tipo de treino desejado (Previsto para Semanas 9-10).
+- [ ] **Sistema de Interação e Avaliação** — Lógica para apresentação de justificação pedagógica em ecrã após resposta errada.
 
 ---
 
@@ -119,4 +119,4 @@ Abrir o ficheiro `src/frontend/index.html` diretamente no browser ou utilizar um
 
 ---
 
-*Última actualização: 12 de abril de 2026 · Sem. 4*
+*Última actualização: 19 de abril de 2026 · Sem. 5*
