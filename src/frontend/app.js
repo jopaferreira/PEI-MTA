@@ -9,6 +9,9 @@ window.addEventListener('load', () => {
 });
 
 // VARIÁVEIS GERAIS E CONFIGURAÇÕES
+const API_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost"
+    ? "http://127.0.0.1:8000"   // Desenvolvimento local
+    : window.location.origin;    // Produção: usa automaticamente o domínio atual
 const VF = Vex.Flow; // Atalho para facilitar a chamada da biblioteca VexFlow
 const divPauta = document.getElementById("pauta"); // Elemento HTML onde a pauta será desenhada
 let melodiaAtual = []; // Variável para guardar temporariamente as notas devolvidas pela API
@@ -22,7 +25,7 @@ document.getElementById("btnGerar").addEventListener("click", async () => {
     document.getElementById("opcoes-resposta").innerHTML = "";
     divPauta.innerHTML = "";
 
-    const resposta = await fetch("http://127.0.0.1:8000/api/exercicio/novo");
+    const resposta = await fetch(`${API_URL}/api/exercicio/novo`);
     const dados = await resposta.json();
     
     melodiaAtual = dados.notas;
@@ -83,7 +86,7 @@ function criarBotoesResposta(opcoes, respostaCerta) {
                 correta: acertou
             };
 
-            await fetch("http://127.0.0.1:8000/api/tentativas/", {
+            await fetch(`${API_URL}/api/tentativas/`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
@@ -98,7 +101,7 @@ function criarBotoesResposta(opcoes, respostaCerta) {
 
 // Obtém e Atualiza as Métricas para o Dashboard
 async function atualizarDashboard() {
-    const resposta = await fetch("http://127.0.0.1:8000/api/dashboard/");
+    const resposta = await fetch(`${API_URL}/api/dashboard/`);
     const dados = await resposta.json();
     document.getElementById("dashboard").innerText = 
         `Total Respostas: ${dados.total_tentativas} | Taxa de Acerto: ${dados.taxa_acerto_global}%`;
