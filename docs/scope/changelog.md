@@ -48,9 +48,9 @@
 
 ## Sem. 6 · 22–25 abr
 
-**Feito:** Consolidação da base de código, testes e preparação para a demonstração. 
-**Bloqueou:** Nada. 
-**Próxima semana:** Apresentação da Demo Interna ao orientador
+**Feito:** Consolidação da base de código, testes e preparação para a demonstração.
+**Bloqueou:** Nada.
+**Próxima semana:** Apresentação da Demo Interna ao orientador.
 
 ---
 
