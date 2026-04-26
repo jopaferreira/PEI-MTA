@@ -20,7 +20,7 @@
 |                                                           |
 |  +-----------------------------------------------------+  |
 |  |                                                     |  |
-|  |             Treinador de Teoria Musical             |  |
+|  |                Musical Theory Trainer               |  |
 |  |                                                     |  |
 |  |                A aguardar exercício                 |  |
 |  |                                                     |  |
@@ -49,7 +49,7 @@
 |                                                           |
 |  +-----------------------------------------------------+  |
 |  |                                                     |  |
-|  |             Treinador de Teoria Musical             |  |
+|  |                Musical Theory Trainer               |  |
 |  |                                                     |  |
 |  |                 Qual é esta escala?                 |  |
 |  |                                                     |  |
