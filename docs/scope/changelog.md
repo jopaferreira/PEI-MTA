@@ -56,9 +56,9 @@
 
 ## Sem. 7 · 28 abr–2 mai · DEMO INTERNA
 
-**Feito:**  
-**Bloqueou:**  
-**Próxima semana:**
+**Feito:**  Elaboração e conclusão do Relatório Intercalar.
+**Bloqueou:**  Não foi realizada a Demo Interna com o orientador, nem validada a arquitetura.
+**Próxima semana:** Submissão do Relatório Intercalar (6 de maio) e início da implementação de novos exercícios.
 
 ---
 
