@@ -13,7 +13,7 @@
 
 <!-- Actualizar a cada entrega. Escolher um estado e apagar os outros. -->
 
-🟢 **Verde** — A correr conforme planeado. O repositório foi configurado, a arquitetura base (SPA + API) está estabelecida e o modelo de dados inicial implementado.
+🟢 **Verde** — A correr conforme planeado. O núcleo do MVP (geração de intervalos/escalas, pauta e áudio) está funcional e o Relatório Intercalar correspondente à Entrega 1 foi concluído.
 
 ---
 
@@ -119,4 +119,4 @@ Abrir o ficheiro `src/frontend/index.html` diretamente no browser ou utilizar um
 
 ---
 
-*Última actualização: 19 de abril de 2026 · Sem. 5*
+*Última actualização: 3 de maio de 2026 · Sem. 7*
