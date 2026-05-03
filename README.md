@@ -34,7 +34,7 @@
 
 - [ ] **Exercícios de Tonalidades** — Implementação da geração procedimental de armações de clave no Backend (Previsto para Semanas 9-10).
 - [ ] **Filtro de Exercícios** — Adição de controlos na interface para o utilizador poder escolher o tipo de treino desejado (Previsto para Semanas 9-10).
-- [ ] **Justificação Pedagógica** — Apresentação de explicação teórica detalhada após resposta errada. A avaliação automática básica (sinalização visual verde/vermelho) está implementada (Previsto para Semanas 9-10).
+- [ ] **Justificação Pedagógica** — Apresentação de explicação teórica detalhada após resposta errada. A avaliação automática básica (sinalização visual verde/vermelho) está implementada (Previsto para Semanas 9-10). 
 
 ---
 
