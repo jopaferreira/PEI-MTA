@@ -2,6 +2,22 @@
 
 import random
 
+# Constantes para as Tonalidades (Ciclo das Quintas)
+ORDEM_SUSTENIDOS = ['F', 'C', 'G', 'D', 'A', 'E', 'B']
+ORDEM_BEMOIS = ['B', 'E', 'A', 'D', 'G', 'C', 'F']
+
+TONALIDADES_MAIORES = {
+    -7: 'Cb Maior', -6: 'Gb Maior', -5: 'Db Maior', -4: 'Ab Maior', -3: 'Eb Maior', -2: 'Bb Maior', -1: 'F Maior',
+     0: 'C Maior',
+     1: 'G Maior',   2: 'D Maior',   3: 'A Maior',   4: 'E Maior',   5: 'B Maior',   6: 'F# Maior',  7: 'C# Maior'
+}
+
+TONALIDADES_MENORES = {
+    -7: 'Ab Menor', -6: 'Eb Menor', -5: 'Bb Menor', -4: 'F Menor', -3: 'C Menor', -2: 'G Menor', -1: 'D Menor',
+     0: 'A Menor',
+     1: 'E Menor',   2: 'B Menor',   3: 'F# Menor',  4: 'C# Menor',  5: 'G# Menor',  6: 'D# Menor',  7: 'A# Menor'
+}
+
 # O Dicionário meios tons
 # Mapeia a posição do som para a nota correta
 DICIONARIO_ORTOGRAFICO = {
@@ -104,4 +120,41 @@ def gerar_escala_aleatoria():
     return {
         "tipo_exercicio": "Escala", "detalhe": nome_escala_correta,
         "notas": notas_escala, "opcoes": opcoes_resposta
+    }
+
+def gerar_exercicio_tonalidade():
+    # 1. Sorteia uma armação de clave (entre 7 bemóis e 7 sustenidos)
+    num_acidentes = random.randint(-7, 7)
+    
+    # 2. Sorteia se vamos perguntar a tonalidade Maior ou Menor
+    tipo_pergunta = random.choice(['Maior', 'Menor'])
+    
+    if tipo_pergunta == 'Maior':
+        resposta_certa = TONALIDADES_MAIORES[num_acidentes]
+        dicionario_opcoes = TONALIDADES_MAIORES
+    else:
+        resposta_certa = TONALIDADES_MENORES[num_acidentes]
+        dicionario_opcoes = TONALIDADES_MENORES
+
+    # 3. Determina os acidentes específicos para o VexFlow e Tone.js (opcional)
+    acidentes_ativos = []
+    if num_acidentes > 0:
+        acidentes_ativos = [f"{nota}#" for nota in ORDEM_SUSTENIDOS[:num_acidentes]]
+    elif num_acidentes < 0:
+        acidentes_ativos = [f"{nota}b" for nota in ORDEM_BEMOIS[:abs(num_acidentes)]]
+
+    # 4. Gera distratores (3 opções erradas aleatórias)
+    chaves_erradas = random.sample([k for k in dicionario_opcoes.keys() if k != num_acidentes], 3)
+    opcoes = [resposta_certa] + [dicionario_opcoes[k] for k in chaves_erradas]
+    random.shuffle(opcoes) # Baralha a ordem dos botões
+
+    # 5. Devolve o pacote (Envia lista vazia de 'notas' pois só precisamos da clave)
+    return {
+        "tipo_exercicio": "Tonalidade",
+        "detalhe": resposta_certa, 
+        "notas": [], 
+        "opcoes": opcoes,
+        "num_acidentes": num_acidentes,
+        "acidentes_ativos": acidentes_ativos,
+        "mensagem": f"Qual é a Tonalidade {tipo_pergunta} com esta armação de clave?"
     }

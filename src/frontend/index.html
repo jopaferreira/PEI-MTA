@@ -28,6 +28,16 @@
         
         <div id="pauta"></div>
 
+        <div style="margin-bottom: 15px;">
+            <label for="filtroExercicio" style="font-size: 14px; color: #555;"><strong>Treinar:</strong></label>
+            <select id="filtroExercicio" style="padding: 8px; border-radius: 5px; font-size: 14px; border: 1px solid #ccc;">
+                <option value="Mistura">Intervalos, Escalas e Tonalidades, aleatoriamente</option>
+                <option value="Intervalo">Apenas Intervalos</option>
+                <option value="Escala">Apenas Escalas</option>
+                <option value="Tonalidade">Apenas Tonalidades</option>
+            </select>
+        </div>
+
         <div class="botoes">
             <button id="btnGerar" class="btn-primary">🔄 Novo Exercício</button>
             <button id="btnTocar" class="btn-success" disabled>▶ Tocar</button>

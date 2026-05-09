@@ -1,4 +1,4 @@
-// GESTÃO DO INTERFACE E ARRANQUE
+// GESTÃO DA INTERFACE E ARRANQUE
 
 // Remove Splash Screen 2 segundos após carregamento da página
 window.addEventListener('load', () => {
@@ -25,19 +25,32 @@ document.getElementById("btnGerar").addEventListener("click", async () => {
     document.getElementById("opcoes-resposta").innerHTML = "";
     divPauta.innerHTML = "";
 
-    const resposta = await fetch(`${API_URL}/api/exercicio/novo`);
+    // Lê qual o modo de treino escolhido pelo utilizador na caixa de seleção
+    const filtroSelecionado = document.getElementById("filtroExercicio").value;
+
+    // Pede ao Python, enviando o filtro na URL (ex: /api/exercicio/novo?filtro=Escala)
+    const resposta = await fetch(`${API_URL}/api/exercicio/novo?filtro=${filtroSelecionado}`);
     const dados = await resposta.json();
     
-    melodiaAtual = dados.notas;
+    // Proteção: para as tonalidades, a lista de notas vem vazia
+    melodiaAtual = dados.notas || []; 
     exercicioAtual = dados; 
     
     const status = document.getElementById("status");
     status.innerText = dados.mensagem;
     status.style.color = "#333"; 
     
-    document.getElementById("btnTocar").disabled = false;
+    // Lógica para o botão "Tocar" (ocultar nas Tonalidades)
+    const btnTocar = document.getElementById("btnTocar");
+    if (dados.tipo_exercicio === "Tonalidade") {
+        btnTocar.style.display = "none";
+    } else {
+        btnTocar.style.display = "inline-block";
+        btnTocar.disabled = false;
+    }
 
-    desenharPauta(melodiaAtual);
+    // Passamos o objeto 'dados' completo em vez de apenas as notas
+    desenharPauta(dados); 
     criarBotoesResposta(dados.opcoes, dados.detalhe); 
     atualizarDashboard();
 });
@@ -110,19 +123,41 @@ async function atualizarDashboard() {
 
 // RENDERIZAÇÃO VISUAL (VEXFLOW) E SONORA (TONE.JS)
 // Desenho da Pauta Musical
-function desenharPauta(dadosMelodia) {
+function desenharPauta(dados) {
     divPauta.innerHTML = ""; 
     
     // Largura aumentada para 550px para caberem os acidentes
-    const larguraPauta = dadosMelodia.length > 2 ? 550 : 250;
+    const larguraPauta = (dados.notas && dados.notas.length > 2) ? 550 : 250;
     
     const renderer = new VF.Renderer(divPauta, VF.Renderer.Backends.SVG);
     renderer.resize(larguraPauta + 50, 150);
     const context = renderer.getContext();
     
-    const stave = new VF.Stave(10, 0, larguraPauta).addClef("treble").addTimeSignature("4/4").setContext(context).draw();
+    const stave = new VF.Stave(10, 0, larguraPauta).addClef("treble");
 
-    const vexNotes = dadosMelodia.map(nota => {
+    // NOVA LÓGICA: Se for Tonalidade, desenha apenas a armação de clave
+    if (dados.tipo_exercicio === "Tonalidade") {
+        // Dicionário para converter o número de acidentes nas "Keys" do VexFlow
+        const vexflowKeys = {
+            "-7": "Cb", "-6": "Gb", "-5": "Db", "-4": "Ab", "-3": "Eb", "-2": "Bb", "-1": "F",
+            "0": "C", 
+            "1": "G", "2": "D", "3": "A", "4": "E", "5": "B", "6": "F#", "7": "C#"
+        };
+        
+        const chave = vexflowKeys[dados.num_acidentes.toString()];
+        
+        // Adiciona a armação de clave correta à pauta
+        stave.addKeySignature(chave);
+        stave.setContext(context).draw();
+        
+        // Sai da função imediatamente pois não há notas para desenhar
+        return; 
+    }
+
+    // LÓGICA ANTIGA: Para Intervalos e Escalas desenhamos o compasso e as notas
+    stave.addTimeSignature("4/4").setContext(context).draw();
+
+    const vexNotes = dados.notas.map(nota => {
         const staveNote = new VF.StaveNote({ keys: [nota.vexflow], duration: "q" });
         
         // Verifica qual o acidente necessário
@@ -136,10 +171,8 @@ function desenharPauta(dadosMelodia) {
         // Aplica o acidente - suporta VexFlow antigo e moderno
         if (sinal) {
             try {
-                // Tenta a sintaxe moderna (VexFlow 4+)
                 staveNote.addModifier(sinal, 0); 
             } catch (e) {
-                // Se falhar, resgata com a sintaxe clássica (VexFlow 1.x / 3.x)
                 staveNote.addModifier(0, sinal); 
             }
         }
@@ -147,7 +180,7 @@ function desenharPauta(dadosMelodia) {
         return staveNote;
     });
     
-    const voice = new VF.Voice({ num_beats: dadosMelodia.length, beat_value: 4 }).addTickables(vexNotes);
+    const voice = new VF.Voice({ num_beats: dados.notas.length, beat_value: 4 }).addTickables(vexNotes);
     
     new VF.Formatter().joinVoices([voice]).format([voice], larguraPauta - 50);
     voice.draw(context, stave);
@@ -155,6 +188,9 @@ function desenharPauta(dadosMelodia) {
 
 // Reprodução de Áudio
 document.getElementById("btnTocar").addEventListener("click", async () => {
+    // Se o array de notas estiver vazio, não faz sentido avançar
+    if (melodiaAtual.length === 0) return;
+
     // O Tone.start() é obrigatório pelas políticas de segurança dos browsers para permitir áudio
     await Tone.start();
     

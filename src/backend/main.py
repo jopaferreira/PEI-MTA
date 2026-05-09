@@ -11,7 +11,8 @@ import random
 
 # Importa modelo da Base de Dados
 from models import engine, Base, Tentativa, Utilizador
-from music_logic import gerar_intervalo_aleatorio, gerar_escala_aleatoria
+# ADICIONADO: gerar_exercicio_tonalidade
+from music_logic import gerar_intervalo_aleatorio, gerar_escala_aleatoria, gerar_exercicio_tonalidade 
 
 # Sessões para comunicação com o SQLite
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -49,16 +50,33 @@ class TentativaCreate(BaseModel):
 
 # Gera Exercício 
 @app.get("/api/exercicio/novo")
-def gerar_exercicio():
-    # Sorteio: 0 para Intervalo, 1 para Escala
-    if random.choice([0, 1]) == 0:
+def gerar_exercicio(filtro: str = "Mistura"): # Recebe o filtro do browser (por defeito é Mistura)
+    
+    # Decide quais os números que podem ir a sorteio consoante o filtro
+    opcoes_validas = []
+    if filtro == "Intervalo":
+        opcoes_validas = [0]
+    elif filtro == "Escala":
+        opcoes_validas = [1]
+    elif filtro == "Tonalidade":
+        opcoes_validas = [2]
+    else:
+        opcoes_validas = [0, 1, 2] # Se for "Mistura", sorteia entre todos
+        
+    sorteio = random.choice(opcoes_validas)
+    
+    if sorteio == 0:
         exercicio = gerar_intervalo_aleatorio()
         mensagem = "Qual é este intervalo?"
-    else:
+    elif sorteio == 1:
         exercicio = gerar_escala_aleatoria()
         mensagem = "Qual é esta escala?"
+    else:
+        exercicio = gerar_exercicio_tonalidade()
+        mensagem = exercicio["mensagem"]
     
-    return {
+    # Constrói a resposta base JSON
+    resposta = {
         "status": "sucesso",
         "mensagem": mensagem,
         "tipo_exercicio": exercicio["tipo_exercicio"],
@@ -66,6 +84,13 @@ def gerar_exercicio():
         "notas": exercicio["notas"],
         "opcoes": exercicio["opcoes"]
     }
+    
+    # Injeta os dados da armação de clave se for um exercício de Tonalidade
+    if sorteio == 2:
+        resposta["num_acidentes"] = exercicio["num_acidentes"]
+        resposta["acidentes_ativos"] = exercicio["acidentes_ativos"]
+        
+    return resposta
 
 # Grava Resposta 
 @app.post("/api/tentativas/")
