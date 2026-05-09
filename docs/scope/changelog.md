@@ -64,17 +64,17 @@
 
 ## Sem. 8 · 5–6 mai · INTERCALAR
 
-**Feito:**  
-**Bloqueou:**  
-**Próxima semana:**
+**Feito:**  Revisão final e submissão do Relatório Intercalar em formato PDF.
+**Bloqueou:**  Nada.
+**Próxima semana:** Retomar o código: implementação de Tonalidades e menu de opções.
 
 ---
 
 ## Sem. 9 · 7–9 mai
 
-**Feito:**  
-**Bloqueou:**  
-**Próxima semana:**
+**Feito:** Implementação da geração procedimental de Tonalidades (Ciclo das Quintas) e integração na interface (desenho de armações de clave). Adição do Filtro de Exercícios no Frontend e Backend. 
+**Bloqueou:** A implementação da Justificação Pedagógica em desenvolvimento.
+**Próxima semana:** Desenvolvimento da lógica e interface para as Justificações Pedagógicas (feedback em caso de erro).
 
 ---
 

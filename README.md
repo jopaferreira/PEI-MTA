@@ -25,15 +25,14 @@
 - [x] **Estrutura de Base de Dados (SQLite)** — Definição do ORM via SQLAlchemy com as tabelas de Utilizador e Tentativas para suporte à persistência de resultados.
 - [x] **Motor da API (Backend)** — Geração procedimental implementada para exercícios de **Intervalos** e **Escalas**.
 - [x] **Interface Base (Frontend)** — SPA responsiva com integração do VexFlow (desenho de pautas e acidentes) e Tone.js (reprodução áudio).
+- [x] **Tonalidades (Ciclo das Quintas)** — Geração de exercícios de armações de clave maiores e menores com ocultação inteligente do reprodutor de áudio.
+- [x] **Filtro de Treino** — Possibilidade de o utilizador escolher o tipo de exercício que quer praticar (Mistura, Intervalos, Escalas ou Tonalidades) através de dropdown.
 
 ---
 
 ## O que está pendente
 
 <!-- O que falta do MVP e porquê. Se algo foi descontinuado, explicar a decisão. -->
-
-- [ ] **Exercícios de Tonalidades** — Implementação da geração procedimental de armações de clave no Backend (Previsto para Semanas 9-10).
-- [ ] **Filtro de Exercícios** — Adição de controlos na interface para o utilizador poder escolher o tipo de treino desejado (Previsto para Semanas 9-10).
 - [ ] **Justificação Pedagógica** — Apresentação de explicação teórica detalhada após resposta errada. A avaliação automática básica (sinalização visual verde/vermelho) está implementada (Previsto para Semanas 9-10). 
 
 ---
@@ -119,4 +118,4 @@ Abrir o ficheiro `src/frontend/index.html` diretamente no browser ou utilizar um
 
 ---
 
-*Última actualização: 3 de maio de 2026 · Sem. 7*
+*Última actualização: 9 de maio de 2026 · Sem. 9*
