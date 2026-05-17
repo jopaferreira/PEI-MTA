@@ -80,9 +80,9 @@
 
 ## Sem. 10 · 12–16 mai
 
-**Feito:**  
-**Bloqueou:**  
-**Próxima semana:**
+**Feito:** Implementação da Justificação Pedagógica. O sistema gera e exibe feedback teórico sempre que o utilizador erra uma resposta. Refatoração e melhoria dos comentários técnicos no código-fonte.
+**Bloqueou:** Nada.
+**Próxima semana:** Início da fase de testes funcionais unitários, resolução de eventuais bugs e polimento da interface de utilizador (UI/UX).
 
 ---
 

@@ -27,13 +27,13 @@
 - [x] **Interface Base (Frontend)** — SPA responsiva com integração do VexFlow (desenho de pautas e acidentes) e Tone.js (reprodução áudio).
 - [x] **Tonalidades (Ciclo das Quintas)** — Geração de exercícios de armações de clave maiores e menores com ocultação inteligente do reprodutor de áudio.
 - [x] **Filtro de Treino** — Possibilidade de o utilizador escolher o tipo de exercício que quer praticar (Mistura, Intervalos, Escalas ou Tonalidades) através de dropdown.
-
+- [x] **Justificação Pedagógica** — Apresentação de explicação teórica detalhada após resposta errada.
 ---
 
 ## O que está pendente
 
 <!-- O que falta do MVP e porquê. Se algo foi descontinuado, explicar a decisão. -->
-- [ ] **Justificação Pedagógica** — Apresentação de explicação teórica detalhada após resposta errada. A avaliação automática básica (sinalização visual verde/vermelho) está implementada (Previsto para Semanas 9-10). 
+ 
 
 ---
 
@@ -118,4 +118,4 @@ Abrir o ficheiro `src/frontend/index.html` diretamente no browser ou utilizar um
 
 ---
 
-*Última actualização: 9 de maio de 2026 · Sem. 9*
+*Última actualização: 17 de maio de 2026 · Sem. 10*
