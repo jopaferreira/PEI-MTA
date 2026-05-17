@@ -10,11 +10,11 @@ from sqlalchemy.orm import Session, sessionmaker
 import random
 
 # Importa modelo da Base de Dados
-from models import engine, Base, Tentativa, Utilizador
-# ADICIONADO: gerar_exercicio_tonalidade
+from models import engine, Tentativa, Utilizador
+# Importa função para gerar exercício de tonalidade
 from music_logic import gerar_intervalo_aleatorio, gerar_escala_aleatoria, gerar_exercicio_tonalidade 
 
-# Sessões para comunicação com o SQLite
+# Sessões para comunicação com a Base de Dados - SQLite
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Inicializa aplicação
@@ -44,9 +44,7 @@ class TentativaCreate(BaseModel):
     resposta_dada: str
     correta: bool
 
-# ==========================================
 # FUNÇÕES DA API
-# ==========================================
 
 # Gera Exercício 
 @app.get("/api/exercicio/novo")
@@ -82,7 +80,8 @@ def gerar_exercicio(filtro: str = "Mistura"): # Recebe o filtro do browser (por 
         "tipo_exercicio": exercicio["tipo_exercicio"],
         "detalhe": exercicio["detalhe"],
         "notas": exercicio["notas"],
-        "opcoes": exercicio["opcoes"]
+        "opcoes": exercicio["opcoes"],
+        "explicacao": exercicio["explicacao"]
     }
     
     # Injeta os dados da armação de clave se for um exercício de Tonalidade

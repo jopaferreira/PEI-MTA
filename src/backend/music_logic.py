@@ -92,9 +92,13 @@ def gerar_intervalo_aleatorio():
     opcoes_resposta = random.sample(todas_chaves, 3) + [nome_intervalo]
     random.shuffle(opcoes_resposta)
     
+    # Justificação Pedagógica
+    explicacao = f"Uma {nome_intervalo} corresponde a uma distância exata de {meios_tons} meios-tons."
+    
     return {
         "tipo_exercicio": "Intervalo", "detalhe": nome_intervalo,
-        "notas": [nota_base, nota_alvo], "opcoes": opcoes_resposta
+        "notas": [nota_base, nota_alvo], "opcoes": opcoes_resposta,
+        "explicacao": explicacao 
     }
 
 def gerar_escala_aleatoria():
@@ -117,16 +121,24 @@ def gerar_escala_aleatoria():
     opcoes_resposta = list(tipos_escalas.keys())
     random.shuffle(opcoes_resposta)
     
+    # Justificação Pedagógica
+    explicacoes_teoricas = {
+        "Escala Maior": "A Escala Maior segue a estrutura de intervalos: Tom - Tom - Semitom - Tom - Tom - Tom - Semitom.",
+        "Escala Menor Natural": "A Escala Menor Natural segue a estrutura: Tom - Semitom - Tom - Tom - Semitom - Tom - Tom.",
+        "Escala Menor Harmónica": "A Escala Menor Harmónica baseia-se na escala menor natural, mas o seu 7º grau é elevado num semitom para criar a sensível."
+    }
+    
     return {
         "tipo_exercicio": "Escala", "detalhe": nome_escala_correta,
-        "notas": notas_escala, "opcoes": opcoes_resposta
+        "notas": notas_escala, "opcoes": opcoes_resposta,
+        "explicacao": explicacoes_teoricas[nome_escala_correta]
     }
 
 def gerar_exercicio_tonalidade():
-    # 1. Sorteia uma armação de clave (entre 7 bemóis e 7 sustenidos)
+    # Sorteia uma armação de clave (entre 7 bemóis e 7 sustenidos)
     num_acidentes = random.randint(-7, 7)
     
-    # 2. Sorteia se vamos perguntar a tonalidade Maior ou Menor
+    # Sorteia a tonalidade: Maior ou Menor
     tipo_pergunta = random.choice(['Maior', 'Menor'])
     
     if tipo_pergunta == 'Maior':
@@ -136,19 +148,27 @@ def gerar_exercicio_tonalidade():
         resposta_certa = TONALIDADES_MENORES[num_acidentes]
         dicionario_opcoes = TONALIDADES_MENORES
 
-    # 3. Determina os acidentes específicos para o VexFlow e Tone.js (opcional)
+    # Determina os acidentes da armação de clave para renderização no VexFlow
     acidentes_ativos = []
     if num_acidentes > 0:
         acidentes_ativos = [f"{nota}#" for nota in ORDEM_SUSTENIDOS[:num_acidentes]]
     elif num_acidentes < 0:
         acidentes_ativos = [f"{nota}b" for nota in ORDEM_BEMOIS[:abs(num_acidentes)]]
 
-    # 4. Gera distratores (3 opções erradas aleatórias)
+    # Gera distratores (opções erradas aleatórias)
     chaves_erradas = random.sample([k for k in dicionario_opcoes.keys() if k != num_acidentes], 3)
     opcoes = [resposta_certa] + [dicionario_opcoes[k] for k in chaves_erradas]
     random.shuffle(opcoes) # Baralha a ordem dos botões
 
-    # 5. Devolve o pacote (Envia lista vazia de 'notas' pois só precisamos da clave)
+    # Justificação Pedagógica
+    texto_acidentes = "nenhum acidente (Dó Maior / Lá Menor)"
+    if num_acidentes > 0:
+        texto_acidentes = f"{num_acidentes} sustenido(s)"
+    elif num_acidentes < 0:
+        texto_acidentes = f"{abs(num_acidentes)} bemol/bemóis"
+        
+    explicacao = f"De acordo com o Ciclo das Quintas, a tonalidade de {resposta_certa} possui exatamente {texto_acidentes} na armação de clave."
+    # Devolve o pacote (Envia lista vazia de 'notas' pois só precisamos da clave)
     return {
         "tipo_exercicio": "Tonalidade",
         "detalhe": resposta_certa, 
@@ -156,5 +176,6 @@ def gerar_exercicio_tonalidade():
         "opcoes": opcoes,
         "num_acidentes": num_acidentes,
         "acidentes_ativos": acidentes_ativos,
-        "mensagem": f"Qual é a Tonalidade {tipo_pergunta} com esta armação de clave?"
+        "mensagem": f"Qual é a Tonalidade {tipo_pergunta} com esta armação de clave?",
+        "explicacao": explicacao
     }

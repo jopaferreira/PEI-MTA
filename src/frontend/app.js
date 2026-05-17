@@ -24,7 +24,7 @@ document.getElementById("btnGerar").addEventListener("click", async () => {
     // Limpa a interface
     document.getElementById("opcoes-resposta").innerHTML = "";
     divPauta.innerHTML = "";
-
+    document.getElementById("explicacao-teorica").style.display = "none";
     // Lê qual o modo de treino escolhido pelo utilizador na caixa de seleção
     const filtroSelecionado = document.getElementById("filtroExercicio").value;
 
@@ -49,7 +49,7 @@ document.getElementById("btnGerar").addEventListener("click", async () => {
         btnTocar.disabled = false;
     }
 
-    // Passamos o objeto 'dados' completo em vez de apenas as notas
+    // Passa o objeto 'dados' completo em vez de apenas as notas
     desenharPauta(dados); 
     criarBotoesResposta(dados.opcoes, dados.detalhe); 
     atualizarDashboard();
@@ -66,12 +66,12 @@ function criarBotoesResposta(opcoes, respostaCerta) {
         btn.innerText = opcao;
         btn.className = "btn-warning"; // Aplica o estilo laranja base definido no CSS
 
-        // Avaliação ao clicar numa resposta
+        // Avaliação e gravação da resposta
         btn.addEventListener("click", async () => {
             const acertou = (opcao === respostaCerta);
             const todosBotoes = divOpcoes.querySelectorAll("button");
 
-            // Feedback Visual imediato através das cores dos botões
+            // Sinalização visual do resultado através das cores dos botões
             todosBotoes.forEach(b => {
                 b.disabled = true; // Bloqueia botões para evitar duplo clique
                 if (b.innerText === respostaCerta) {
@@ -83,12 +83,19 @@ function criarBotoesResposta(opcoes, respostaCerta) {
 
             // Atualiza a mensagem de texto com feedback
             const status = document.getElementById("status");
+            // Seleciona a caixa de feedback pedagógico
+            const divExplicacao = document.getElementById("explicacao-teorica"); 
+
             if (acertou) {
                 status.innerText = "✨ Resposta Correta!";
                 status.style.color = "#4CAF50";
             } else {
                 status.innerText = `❌ Errado! A resposta certa era: ${respostaCerta}.`;
                 status.style.color = "#f44336";
+                
+                // Mostra a justificação teórica
+                divExplicacao.innerHTML = `<strong>Dica de Estudo:</strong> ${exercicioAtual.explicacao}`;
+                divExplicacao.style.display = "block";
             }
 
             // Envia o resultado da tentativa para o Python gravar na Base de Dados
@@ -135,7 +142,7 @@ function desenharPauta(dados) {
     
     const stave = new VF.Stave(10, 0, larguraPauta).addClef("treble");
 
-    // NOVA LÓGICA: Se for Tonalidade, desenha apenas a armação de clave
+    // Se for Tonalidade, desenha apenas a armação de clave
     if (dados.tipo_exercicio === "Tonalidade") {
         // Dicionário para converter o número de acidentes nas "Keys" do VexFlow
         const vexflowKeys = {
@@ -154,7 +161,7 @@ function desenharPauta(dados) {
         return; 
     }
 
-    // LÓGICA ANTIGA: Para Intervalos e Escalas desenhamos o compasso e as notas
+    // Para Intervalos e Escalas desenhamos as notas
     stave.addTimeSignature("4/4").setContext(context).draw();
 
     const vexNotes = dados.notas.map(nota => {
@@ -188,13 +195,13 @@ function desenharPauta(dados) {
 
 // Reprodução de Áudio
 document.getElementById("btnTocar").addEventListener("click", async () => {
-    // Se o array de notas estiver vazio, não faz sentido avançar
+    // Se o array de notas estiver vazio não avançar
     if (melodiaAtual.length === 0) return;
 
     // O Tone.start() é obrigatório pelas políticas de segurança dos browsers para permitir áudio
     await Tone.start();
     
-    // Se o sintetizador ainda não estiver criado, cria-o e liga-o às colunas do computador
+    // Se o sintetizador ainda não estiver criado, cria-o e liga-o
     if (!synth) synth = new Tone.Synth().toDestination();
     
     const tempoAtual = Tone.now();
