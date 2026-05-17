@@ -41,8 +41,8 @@ class Tentativa(Base):
     utilizador_id = Column(Integer, ForeignKey("utilizadores.id"))
     
     # Detalhes do exercício e desempenho
-    tipo_exercicio = Column(String, index=True) # Ex: 'Escala', 'Intervalo'
-    detalhe = Column(String)                    # Ex: 'Dó Maior', '3ª Menor'
+    tipo_exercicio = Column(String, index=True) # Ex: 'Escala', 'Intervalo', 'Tonalidade'
+    detalhe = Column(String)                    # Ex: 'Dó Maior', '3ª Menor', 'Tonalidade'
     resposta_dada = Column(String)              # Resposta do utilizador
     correta = Column(Boolean)                   # True se acertou, False se errou
     data_hora = Column(DateTime, default=datetime.utcnow) # Registo temporal da submissão

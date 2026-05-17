@@ -80,7 +80,7 @@ button:disabled {
     transition: opacity 0.8s ease-out, visibility 0.8s ease-out; /* Transição suave no desaparecimento */
 }
 
-/* Animação da entrada do texto incial - de baixo para cima */
+/* Animação da entrada do texto inicial - de baixo para cima */
 .splash-content {
     text-align: center;
     animation: fadeIn 1s ease-out;
