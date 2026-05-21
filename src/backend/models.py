@@ -4,11 +4,17 @@
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import declarative_base, relationship
 from datetime import datetime
+import os # Gestão de ficheiros => RENDER
 
-# Configuração da Ligação à Base de Dados - Define o ficheiro local para guardar os dados
-SQLALCHEMY_DATABASE_URL = "sqlite:///./teoria_musical.db"
+# Encontra a pasta exata onde o models.py está => RENDER
+caminho_atual = os.path.dirname(os.path.abspath(__file__))
+# Constrói o caminho absoluto para a base de dados dentro dessa pasta
+caminho_bd = os.path.join(caminho_atual, "teoria_musical.db")
 
-# Motor que comunica com o SQLite ( O argumento 'check_same_thread' como False é uma exigência técnica do FastAPI ao trabalhar com SQLite.)
+# Define o URL usando o caminho absoluto
+SQLALCHEMY_DATABASE_URL = f"sqlite:///{caminho_bd}"
+
+# Motor que comunica com o SQLite.
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
 )
