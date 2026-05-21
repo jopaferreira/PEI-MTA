@@ -3,6 +3,8 @@
 # Bibliotecas - FastAPI e validação de dados
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
+# Para servir o frontend (HTML/JS) diretamente do backend - RENDER
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 # Bibliotecas - Base de Dados e utilitários
@@ -136,3 +138,7 @@ def obter_metricas(db: Session = Depends(get_db)):
         "respostas_certas": certas,
         "taxa_acerto_global": round(taxa, 2) # Arredonda o valor a 2 casas decimais
     }
+
+# SERVIDOR DE FICHEIROS ESTÁTICOS (FRONTEND)
+# Diz ao FastAPI para servir o index.html e ficheiros associados (app.js, styles.css) na raiz do site => RENDER
+app.mount("/", StaticFiles(directory=".", html=True), name="static")
