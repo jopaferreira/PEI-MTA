@@ -142,9 +142,9 @@ def obter_metricas(db: Session = Depends(get_db)):
     }
 
 # SERVIDOR DE FICHEIROS ESTÁTICOS (FRONTEND)
-# Encontra a pasta onde ficheiro main.py está
+# Encontra a pasta onde ficheiro main.py está => RENDER
 caminho_atual = os.path.dirname(os.path.abspath(__file__))
-# Constrói o caminho subindo um nível (..) e entrando na pasta frontend
+# Constrói o caminho subindo um nível (..) e entrando na pasta frontend => RENDER
 caminho_frontend = os.path.join(caminho_atual, "..", "frontend")
-# Diz ao FastAPI para servir o index.html a partir da pasta correta
+# Diz ao FastAPI para servir o index.html a partir da pasta correta => RENDER
 app.mount("/", StaticFiles(directory=caminho_frontend, html=True), name="static")
