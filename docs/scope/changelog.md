@@ -88,9 +88,9 @@
 
 ## Sem. 11 · 19–23 mai
 
-**Feito:**  
-**Bloqueou:**  
-**Próxima semana:**
+**Feito:** Deploy da aplicação em ambiente de produção na nuvem (Render). Resolução de bugs de infraestrutura (Erros 404 e falhas de persistência) através da injeção do módulo `os` no Backend para resolução de caminhos absolutos de ficheiros estáticos (SPA) e da Base de Dados SQLite.
+**Bloqueou:** Nada.
+**Próxima semana:** Fase de testes funcionais (unitários e de aceitação), captura de ecrãs do sistema em funcionamento para evidências e início da redação do Capítulo 4 do Relatório Final.
 
 ---
 

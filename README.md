@@ -72,6 +72,9 @@ uvicorn main:app --reload
 
 # A API ficará acessível em: [http://127.0.0.1:8000](http://127.0.0.1:8000)
 # Documentação interativa (Swagger): [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+### Acesso em Produção (Live)
+A aplicação encontra-se operacional e alojada na nuvem. Pode ser testada diretamente através de qualquer browser no seguinte endereço:
+👉 **[https://pei-mta.onrender.com/](https://pei-mta.onrender.com/)**
 
 # 2. Iniciar a Interface (Frontend)
 Abrir o ficheiro `src/frontend/index.html` diretamente no browser ou utilizar uma extensão como o "Live Server" no VS Code.
@@ -118,4 +121,4 @@ Abrir o ficheiro `src/frontend/index.html` diretamente no browser ou utilizar um
 
 ---
 
-*Última actualização: 17 de maio de 2026 · Sem. 10*
+*Última actualização: 24 de maio de 2026 · Sem. 11*
