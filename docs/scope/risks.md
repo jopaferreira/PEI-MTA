@@ -18,6 +18,7 @@
 | R02 | **Dificuldades na integração técnica VexFlow/Tone.js:** Dessincronização entre as notas desenhadas visualmente na pauta e as frequências áudio geradas pelo sintetizador. | Alta | Alto | Separação da lógica de renderização: a API Backend envia a nota num formato padronizado (ex: notação científica "C4") que é lido inequivocamente tanto pelo renderizador SVG (VexFlow) como pelo motor de áudio (Tone.js). |
 | R03 | **Complexidade do motor de geração procedimental:** Dificuldade na programação da lógica matemática que garante que um exercício musical gerado aleatoriamente respeita as regras da teoria musical convencional. | Média | Médio | Abordagem incremental: criar primeiro dicionários estáticos com dados validados de exercícios; só depois de o fluxo completo funcionar se substituirá por geração puramente processual/matemática. |
 | R04 | **Restrições de Autoplay nos Browsers:** O *browser* bloquear a reprodução automática de áudio (Tone.js) por políticas de segurança. | Alta | Médio | O desenho da interface obriga o utilizador a interagir fisicamente com a página (clique explícito no botão "Tocar") para iniciar o contexto de áudio (*AudioContext*), cumprindo as diretrizes dos navegadores modernos. |
+| R05 | **Sistemas de Ficheiros Efémeros na Nuvem:** Perda da base de dados SQLite (histórico) quando a plataforma de alojamento gratuito (Render) reinicia o contentor por inatividade. | Alta | Médio | Aceitação do risco para o MVP: a persistência relacional está funcional e demonstrável numa sessão contínua. Arquitetada a transição futura (alterando apenas a *string* do SQLAlchemy) para um serviço de base de dados PostgreSQL isolado e persistente. |
 
 ---
 
@@ -26,3 +27,4 @@
 | Data | Risco | Evento | Estado |
 |------|-------|--------|--------|
 | 04/04/2026 | Todos | Criação da matriz inicial de riscos para a Entrega 1 | Em curso |
+| 23/05/2026 | R05 | Identificação de perda de dados no Render por inatividade (Contentor efémero). | Mitigado/Aceite |
