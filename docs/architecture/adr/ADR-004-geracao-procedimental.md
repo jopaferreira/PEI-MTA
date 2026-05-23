@@ -30,11 +30,13 @@ Decidi implementar um **Motor de Geração Procedimental em Python**, que calcul
 ## Consequências
 
 **Positivas:**
+
 - Jogabilidade virtualmente infinita, com exercícios sempre diferentes a cada clique em "Novo Exercício".
 - O motor garante a correção ortográfica e teórica das pautas (desenho correto de acidentes e bemóis).
 - A base de dados fica dedicada exclusivamente ao histórico de métricas do utilizador, mantendo-se leve.
 
 **Negativas / trade-offs:**
+
 - Aumento da complexidade no Backend.
-- Exigiu a criação de dicionários e lógica de mapeamento perturbaram o desenvolvimento da interface.
+- Exigiu a criação de dicionários e lógica de mapeamento que perturbaram o desenvolvimento da interface.
 - Não desenha armações de clave no exercícios com escalas.
