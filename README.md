@@ -5,7 +5,7 @@
 **Estudante:** João Paulo Ramos Ferreira · 1800238
 **Orientador:** Pedro Pestana  
 **UC:** Projecto de Engenharia Informática · Universidade Aberta · 2025/26  
-**Repositório:** https://github.com/jopaferreira/PEI-MTA 
+**Repositório:** <https://github.com/jopaferreira/PEI-MTA>
 
 ---
 
@@ -37,12 +37,14 @@
 
 O núcleo do Produto Mínimo Viável (MVP) delineado na proposta inicial foi alcançado.
 Não existem funcionalidades nucleares pendentes.
-O trabalho atual foca-se nas etapas finais do ciclo de vida do software:
+O trabalho atual foca-se nas etapas finais do desenvolvimento:
+
 - [ ] **Testes Funcionais** — Realização de testes estruturados para validação do sistema e recolha de evidências (capturas de ecrã) para o Capítulo 4 do Relatório Final.
 - [ ] **Polimento (UI/UX)** — Pequenas afinações estéticas, de margens e responsividade para garantir a melhor experiência possível.
 
 **Funcionalidades transitadas para "Trabalho Futuro":**
-* **Autenticação de Múltiplos Utilizadores:** A base de dados foi desenhada de raiz para suportar vários perfis (tabela `Utilizador`). A implementação de um sistema completo de *login* não foi efetuada de acordo com o calendário do MVP e a estabilização da arquitetura base na nuvem.
+
+- **Autenticação de Múltiplos Utilizadores:** A base de dados foi desenhada de raiz para suportar vários perfis (tabela `Utilizador`). A implementação de um sistema completo de *login* não foi efetuada, respeitando o calendário do MVP e visando a estabilização da arquitetura base na nuvem.
 
 ---
 
@@ -50,18 +52,23 @@ O trabalho atual foca-se nas etapas finais do ciclo de vida do software:
 
 <!-- Instruções que funcionam numa máquina limpa. Se não funcionar na demo, não conta como feito. -->
 ### ☁️ Acesso em Produção (Recomendado)
+
 A aplicação encontra-se alojada na nuvem e o MVP pode ser avaliado integralmente sem qualquer instalação local através do endereço:
 👉 **[https://pei-mta.onrender.com/](https://pei-mta.onrender.com/)**
 
 ### 💻 Instalação e Execução Local
 
 **Pré-requisitos:**
-* Git
-* Python 3.10 ou superior (ambiente de desenvolvimento fixado na versão 3.11.9)
-* Browser web moderno
+
+- Git
+
+- Python 3.10 ou superior (ambiente de desenvolvimento fixado na versão 3.11.9)
+
+- Browser web moderno
 
 **1. Instalação e Configuração**
 Abra o terminal e execute os seguintes comandos:
+
 ```bash
 # Clonar o repositório
 git clone https://github.com/jopaferreira/PEI-MTA.git
@@ -81,19 +88,11 @@ pip install -r requirements.txt
 python models.py
 ```
 
-**2. Arranque**
+**2. Arranque do Sistema Integrado**
 
 ```bash
-# Iniciar o servidor da API (dentro da pasta src/backend)
+# Iniciar o servidor FastAPI (dentro da pasta src/backend)
 uvicorn main:app --reload
-
-# A API ficará acessível em: http://127.0.0.1:8000
-# Documentação interativa (Swagger): http://127.0.0.1:8000/docs
-```
-
-**3. Iniciar a Interface (Frontend)**
-
-Abrir o ficheiro `src/frontend/index.html` directamente no browser ou utilizar a extensão "Live Server" no VS Code.
 
 ---
 
@@ -107,7 +106,6 @@ Abrir o ficheiro `src/frontend/index.html` directamente no browser ou utilizar a
 | SQLite (Base de Dados) | PostgreSQL / MySQL | Relacional, leve e integrado no próprio sistema de ficheiros. Ideal para persistir o histórico de métricas no MVP sem necessidade de infraestrutura externa complexa. |
 | SPA com VexFlow e Tone.js | Aplicação Nativa (Mobile) | Garante fluidez e acessibilidade via browser. O VexFlow é o standard web para notação vetorial precisa (SVG) e o Tone.js evita a necessidade de servir ficheiros estáticos pesados (MP3). |
 
-
 ---
 
 ## Referências e IA utilizada
@@ -117,13 +115,13 @@ Abrir o ficheiro `src/frontend/index.html` directamente no browser ou utilizar a
 
 ### Referências técnicas
 
-- Documentação Oficial FastAPI: https://fastapi.tiangolo.com/
+- Documentação Oficial FastAPI: <https://fastapi.tiangolo.com/>
 
-- Documentação Oficial VexFlow: https://github.com/0xfe/vexflow
+- Documentação Oficial VexFlow: <https://github.com/0xfe/vexflow>
 
-- Documentação Oficial Tone.js: https://tonejs.github.io/
+- Documentação Oficial Tone.js: <https://tonejs.github.io/>
 
-- Documentação SQLAlchemy: https://www.sqlalchemy.org/
+- Documentação SQLAlchemy: <https://www.sqlalchemy.org/>
 
 ### Ferramentas de IA utilizadas
 
