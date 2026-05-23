@@ -13,7 +13,7 @@
 
 <!-- Actualizar a cada entrega. Escolher um estado e apagar os outros. -->
 
-🟢 **Verde** — A correr conforme planeado. O núcleo do MVP (geração de intervalos/escalas, pauta e áudio) está funcional e o Relatório Intercalar correspondente à Entrega 1 foi concluído.
+🟢 **Verde** — A correr regularmente e alinhado com o calendário. O Produto Mínimo Viável (MVP) está concluído. A aplicação encontra-se implementada em ambiente de produção (Render). O foco atual incide sobre a realização de testes funcionais e a redação do Relatório Final.
 
 ---
 
@@ -23,63 +23,77 @@
 <!-- Ser específico: não "o login está feito" mas "autenticação por email/password com JWT, sessão persistente em localStorage." -->
 
 - [x] **Estrutura de Base de Dados (SQLite)** — Definição do ORM via SQLAlchemy com as tabelas de Utilizador e Tentativas para suporte à persistência de resultados.
-- [x] **Motor da API (Backend)** — Geração procedimental implementada para exercícios de **Intervalos** e **Escalas**.
+- [x] **Motor da API (Backend)** — Geração procedimental implementada para exercícios de **Intervalos**, **Escalas** e **Tonalidades**.
 - [x] **Interface Base (Frontend)** — SPA responsiva com integração do VexFlow (desenho de pautas e acidentes) e Tone.js (reprodução áudio).
-- [x] **Tonalidades (Ciclo das Quintas)** — Geração de exercícios de armações de clave maiores e menores com ocultação inteligente do reprodutor de áudio.
-- [x] **Filtro de Treino** — Possibilidade de o utilizador escolher o tipo de exercício que quer praticar (Mistura, Intervalos, Escalas ou Tonalidades) através de dropdown.
 - [x] **Justificação Pedagógica** — Apresentação de explicação teórica detalhada após resposta errada.
+- [x] **Filtro de Treino** — Possibilidade de o utilizador escolher o tipo de exercício que quer praticar (Mistura, Intervalos, Escalas ou Tonalidades) através de dropdown.
+- [x] **Alojamento em Produção** — Servidor FastAPI configurado com resolução de caminhos absolutos (módulo `os`) para servir nativamente os ficheiros estáticos, com a aplicação totalmente alojada e estável na nuvem (Render).
+
 ---
 
 ## O que está pendente
 
 <!-- O que falta do MVP e porquê. Se algo foi descontinuado, explicar a decisão. -->
- 
+
+O núcleo do Produto Mínimo Viável (MVP) delineado na proposta inicial foi alcançado.
+Não existem funcionalidades nucleares pendentes.
+O trabalho atual foca-se nas etapas finais do ciclo de vida do software:
+- [ ] **Testes Funcionais** — Realização de testes estruturados para validação do sistema e recolha de evidências (capturas de ecrã) para o Capítulo 4 do Relatório Final.
+- [ ] **Polimento (UI/UX)** — Pequenas afinações estéticas, de margens e responsividade para garantir a melhor experiência possível.
+
+**Funcionalidades transitadas para "Trabalho Futuro":**
+* **Autenticação de Múltiplos Utilizadores:** A base de dados foi desenhada de raiz para suportar vários perfis (tabela `Utilizador`). A implementação de um sistema completo de *login* não foi efetuada de acordo com o calendário do MVP e a estabilização da arquitetura base na nuvem.
 
 ---
 
 ## Como instalar e correr
 
 <!-- Instruções que funcionam numa máquina limpa. Se não funcionar na demo, não conta como feito. -->
+### ☁️ Acesso em Produção (Recomendado)
+A aplicação encontra-se alojada na nuvem e o MVP pode ser avaliado integralmente sem qualquer instalação local através do endereço:
+👉 **[https://pei-mta.onrender.com/](https://pei-mta.onrender.com/)**
 
-### Pré-requisitos
+### 💻 Instalação e Execução Local
 
-```text
-- Python 3.10 ou superior (ambiente de desenvolvimento fixado na versão 3.11.9)
-- Browser web moderno (Chrome, Firefox, Edge)
-```
+**Pré-requisitos:**
+* Git
+* Python 3.10 ou superior (ambiente de desenvolvimento fixado na versão 3.11.9)
+* Browser web moderno
 
-### Instalação
-
+**1. Instalação e Configuração**
+Abra o terminal e execute os seguintes comandos:
 ```bash
-# 1. Clonar o repositório
-git clone [https://github.com/jopaferreira/PEI-MTA.git](https://github.com/jopaferreira/PEI-MTA.git)
-cd PEI-MTA
+# Clonar o repositório
+git clone https://github.com/jopaferreira/PEI-MTA.git
 
-# 2. Configurar o Backend e instalar dependências
-cd src/backend
+# Navegar para a diretoria do backend
+cd PEI-MTA/src/backend
+
+# Criar e ativar um ambiente virtual (recomendado)
+python -m venv venv
+# No Windows: venv\Scripts\activate
+# No Mac/Linux: source venv/bin/activate
+
+# Instalar dependências
 pip install -r requirements.txt
 
-# 3. Inicializar a Base de Dados
-# (Isto irá gerar o ficheiro teoria_musical.db na pasta backend)
+# Inicializar a Base de Dados (cria o ficheiro teoria_musical.db)
 python models.py
 ```
 
-### Acesso
+**2. Arranque**
 
-```
-# 1. Iniciar o servidor da API (no terminal, dentro da pasta src/backend)
+```bash
+# Iniciar o servidor da API (dentro da pasta src/backend)
 uvicorn main:app --reload
 
-# A API ficará acessível em: [http://127.0.0.1:8000](http://127.0.0.1:8000)
-# Documentação interativa (Swagger): [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-### Acesso em Produção (Live)
-A aplicação encontra-se operacional e alojada na nuvem. Pode ser testada diretamente através de qualquer browser no seguinte endereço:
-👉 **[https://pei-mta.onrender.com/](https://pei-mta.onrender.com/)**
-
-# 2. Iniciar a Interface (Frontend)
-Abrir o ficheiro `src/frontend/index.html` diretamente no browser ou utilizar uma extensão como o "Live Server" no VS Code.
-
+# A API ficará acessível em: http://127.0.0.1:8000
+# Documentação interativa (Swagger): http://127.0.0.1:8000/docs
 ```
+
+**3. Iniciar a Interface (Frontend)**
+
+Abrir o ficheiro `src/frontend/index.html` directamente no browser ou utilizar a extensão "Live Server" no VS Code.
 
 ---
 
@@ -118,6 +132,7 @@ Abrir o ficheiro `src/frontend/index.html` diretamente no browser ou utilizar um
 | Ferramenta | Para que foi usada |
 |-----------|-------------------|
 | Google Gemini | Utilizado como ferramenta de apoio pedagógico para estruturar propostas de arquitetura (modelo C4), gerar código boilerplate inicial e debater boas práticas de separação Frontend/Backend. |
+| Claude (Anthropic) | Utilizado como assistente de debugging ao longo do desenvolvimento: resolução de problemas de deployment no Render e lógica de detecção de ambiente (local vs. produção) no frontend. |
 
 ---
 
