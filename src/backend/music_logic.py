@@ -5,7 +5,7 @@ import random
 # Constantes para as Tonalidades (Ciclo das Quintas)
 ORDEM_SUSTENIDOS = ['F', 'C', 'G', 'D', 'A', 'E', 'B']
 ORDEM_BEMOIS = ['B', 'E', 'A', 'D', 'G', 'C', 'F']
-
+# Atribuição do número de acidentes para cada tonalidade 
 TONALIDADES_MAIORES = {
     -7: 'Cb Maior', -6: 'Gb Maior', -5: 'Db Maior', -4: 'Ab Maior', -3: 'Eb Maior', -2: 'Bb Maior', -1: 'F Maior',
      0: 'C Maior',
@@ -18,8 +18,8 @@ TONALIDADES_MENORES = {
      1: 'E Menor',   2: 'B Menor',   3: 'F# Menor',  4: 'C# Menor',  5: 'G# Menor',  6: 'D# Menor',  7: 'A# Menor'
 }
 
-# O Dicionário meios tons
-# Mapeia a posição do som para a nota correta
+# O Dicionário de meios tons
+# Atribui a posição do som para a nota correta
 DICIONARIO_ORTOGRAFICO = {
     0: {'c': {"vexflow": "c/4", "tone": "C4"}, 'b': {"vexflow": "b#/3", "tone": "B#3"}},
     1: {'c': {"vexflow": "c#/4", "tone": "C#4"}, 'd': {"vexflow": "db/4", "tone": "Db4"}},
@@ -48,7 +48,7 @@ DICIONARIO_ORTOGRAFICO = {
 # Alfabeto musical
 SEQUENCIA_LETRAS = ['c', 'd', 'e', 'f', 'g', 'a', 'b']
 
-# Notas base limpas para gerar os exercícios
+# Notas limpas para gerar os exercícios
 NOTAS_BASE_DISPONIVEIS = [
     {"som": 0, "letra": 0}, # Dó
     {"som": 2, "letra": 1}, # Ré
@@ -67,10 +67,11 @@ def obter_nota_ortografica(indice_absoluto, indice_letra):
     else:
         return list(opcoes_som.values())[0]
 
+# Função para gerar um exercício de intervalo aleatório
 def gerar_intervalo_aleatorio():
     base = random.choice(NOTAS_BASE_DISPONIVEIS)
     
-    # Mapeia a soma de meios tons e o avanço no alfabeto exigido!
+    # Atribui a soma de meios tons e a quantidade de saltos de letra para cada tipo de intervalo
     tipos_intervalos = {
         "2ª Menor": (1, 1), "2ª Maior": (2, 1),
         "3ª Menor": (3, 2), "3ª Maior": (4, 2),
@@ -80,13 +81,13 @@ def gerar_intervalo_aleatorio():
         "7ª Menor": (10, 6), "7ª Maior": (11, 6),
         "Oitava": (12, 7)
     }
-    
+    # Sorteia um intervalo e obtém os meios tons e saltos nas letras correspondentes
     nome_intervalo, regras = random.choice(list(tipos_intervalos.items()))
     meios_tons, saltos_letra = regras
-    
+    # Calcula as notas base e alvo usando o dicionário ortográfico
     nota_base = obter_nota_ortografica(base["som"], base["letra"])
     nota_alvo = obter_nota_ortografica(base["som"] + meios_tons, base["letra"] + saltos_letra)
-    
+    # Gera opções de resposta (distratores) e baralha a ordem
     todas_chaves = list(tipos_intervalos.keys())
     todas_chaves.remove(nome_intervalo)
     opcoes_resposta = random.sample(todas_chaves, 3) + [nome_intervalo]
@@ -101,21 +102,22 @@ def gerar_intervalo_aleatorio():
         "explicacao": explicacao 
     }
 
+# Função para gerar um exercício de escala
 def gerar_escala_aleatoria():
     base = random.choice(NOTAS_BASE_DISPONIVEIS)
-    
+    # Define os tipos de escalas e os seus padrões de meios tons a partir da tónica
     tipos_escalas = {
         "Escala Maior": [0, 2, 4, 5, 7, 9, 11, 12],
         "Escala Menor Natural": [0, 2, 3, 5, 7, 8, 10, 12],
         "Escala Menor Harmónica": [0, 2, 3, 5, 7, 8, 11, 12]
     }
-    
-    nome_escala_correta, padrao_semitons = random.choice(list(tipos_escalas.items()))
+    # Sorteia uma escala, obtém o nome e o padrão de meios tons correspondente
+    nome_escala_correta, padrao_meios_tons = random.choice(list(tipos_escalas.items()))
     
     notas_escala = []
-    for salto_alfabeto, semitons in enumerate(padrao_semitons):
+    for salto_alfabeto, meios_tons in enumerate(padrao_meios_tons):
         # Avança o som e avança a letra do alfabeto ao longo da escala
-        nota = obter_nota_ortografica(base["som"] + semitons, base["letra"] + salto_alfabeto)
+        nota = obter_nota_ortografica(base["som"] + meios_tons, base["letra"] + salto_alfabeto)
         notas_escala.append(nota)
         
     opcoes_resposta = list(tipos_escalas.keys())
@@ -123,9 +125,9 @@ def gerar_escala_aleatoria():
     
     # Justificação Pedagógica
     explicacoes_teoricas = {
-        "Escala Maior": "A Escala Maior segue a estrutura de intervalos: Tom - Tom - Semitom - Tom - Tom - Tom - Semitom.",
-        "Escala Menor Natural": "A Escala Menor Natural segue a estrutura: Tom - Semitom - Tom - Tom - Semitom - Tom - Tom.",
-        "Escala Menor Harmónica": "A Escala Menor Harmónica baseia-se na escala menor natural, mas o seu 7º grau é elevado num semitom para criar a sensível."
+        "Escala Maior": "A Escala Maior segue a estrutura de intervalos: Tom - Tom - meio-tom - Tom - Tom - Tom - meio-tom.",
+        "Escala Menor Natural": "A Escala Menor Natural segue a estrutura: Tom - meio-tom - Tom - Tom - meio-tom - Tom - Tom.",
+        "Escala Menor Harmónica": "A Escala Menor Harmónica baseia-se na escala menor natural, mas o seu 7º grau é elevado num meio-tom para criar a sensível."
     }
     
     return {
@@ -134,6 +136,7 @@ def gerar_escala_aleatoria():
         "explicacao": explicacoes_teoricas[nome_escala_correta]
     }
 
+# Função para gerar um exercício de identificação de tonalidade por armação de clave
 def gerar_exercicio_tonalidade():
     # Sorteia uma armação de clave (entre 7 bemóis e 7 sustenidos)
     num_acidentes = random.randint(-7, 7)
@@ -148,17 +151,18 @@ def gerar_exercicio_tonalidade():
         resposta_certa = TONALIDADES_MENORES[num_acidentes]
         dicionario_opcoes = TONALIDADES_MENORES
 
-    # Determina os acidentes da armação de clave para renderização no VexFlow
+    # Determina os acidentes da armação de clave para desenho pelo VexFlow
     acidentes_ativos = []
     if num_acidentes > 0:
         acidentes_ativos = [f"{nota}#" for nota in ORDEM_SUSTENIDOS[:num_acidentes]]
     elif num_acidentes < 0:
         acidentes_ativos = [f"{nota}b" for nota in ORDEM_BEMOIS[:abs(num_acidentes)]]
 
-    # Gera distratores (opções erradas aleatórias)
+    # Gera opções erradas aleatórias - excluindo a resposta certa
     chaves_erradas = random.sample([k for k in dicionario_opcoes.keys() if k != num_acidentes], 3)
     opcoes = [resposta_certa] + [dicionario_opcoes[k] for k in chaves_erradas]
-    random.shuffle(opcoes) # Baralha a ordem dos botões
+    # Baralha a ordem dos botões
+    random.shuffle(opcoes) 
 
     # Justificação Pedagógica
     texto_acidentes = "nenhum acidente (Dó Maior / Lá Menor)"
@@ -168,7 +172,8 @@ def gerar_exercicio_tonalidade():
         texto_acidentes = f"{abs(num_acidentes)} bemol/bemóis"
         
     explicacao = f"De acordo com o Ciclo das Quintas, a tonalidade de {resposta_certa} possui exatamente {texto_acidentes} na armação de clave."
-    # Devolve o pacote (Envia lista vazia de 'notas' pois só precisamos da clave)
+    # Devolve as informações do exercício para o frontend:
+    # tipo de exercício, resposta correta, opções de resposta, acidentes e explicação pedagógica
     return {
         "tipo_exercicio": "Tonalidade",
         "detalhe": resposta_certa, 

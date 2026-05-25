@@ -1,12 +1,14 @@
 # MODELOS DE DADOS - Define as tabelas e cria a base de dados SQLite.
 
-
+# Importa biblioteca Python para trabalhar com bases de dados
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import declarative_base, relationship
-from datetime import datetime
-import os # Gestão de ficheiros => RENDER
+# Importa biblioteca para lidar com datas e horas (registo temporal das tentativas)
+from datetime import datetime, timezone
+# Importa biblioteca para lidar com path de ficheiros
+import os 
 
-# Encontra a pasta exata onde o models.py está => RENDER
+# Encontra a pasta exata onde o models.py está
 caminho_atual = os.path.dirname(os.path.abspath(__file__))
 # Constrói o caminho absoluto para a base de dados dentro dessa pasta
 caminho_bd = os.path.join(caminho_atual, "teoria_musical.db")
@@ -22,7 +24,6 @@ engine = create_engine(
 # Classe base genérica herdada por todas as tabelas
 Base = declarative_base()
 
-
 # Tabelas
 
 class Utilizador(Base):
@@ -32,6 +33,7 @@ class Utilizador(Base):
     # Colunas da tabela
     id = Column(Integer, primary_key=True, index=True) # Identificador único automático
     username = Column(String, unique=True, index=True) # Nome de utilizador (não podem existir dois iguais)
+    password_hash = Column(String) # Hash de segurança da password (evita que a password real seja guardada)
     data_registo = Column(DateTime, default=datetime.utcnow) # Data e hora da criação do perfil
 
     # Relação: Um utilizador pode ter muitas 'tentativas' de exercícios
@@ -51,9 +53,9 @@ class Tentativa(Base):
     detalhe = Column(String)                    # Ex: 'Dó Maior', '3ª Menor', 'Tonalidade'
     resposta_dada = Column(String)              # Resposta do utilizador
     correta = Column(Boolean)                   # True se acertou, False se errou
-    data_hora = Column(DateTime, default=datetime.utcnow) # Registo temporal da submissão
+    data_hora = Column(DateTime, default=lambda: datetime.now(timezone.utc)) # Registo temporal da submissão
 
-    # Relação invertida: Esta tentativa pertence a um utilizador específico
+    # Relação: Cada tentativa pertence a um utilizador
     utilizador = relationship("Utilizador", back_populates="tentativas")
 
 

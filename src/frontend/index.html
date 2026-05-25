@@ -1,33 +1,50 @@
-<!--Single Page Application que comunica com o backend, desenha pautas e reproduz os sons.-->
-
 <!DOCTYPE html>
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
     <title>Musical Theory Trainer</title>
-    
+    <!-- Carrega o VexFlow versão 4.2.2 diretamente via CDN. -->
     <script src="https://cdn.jsdelivr.net/npm/vexflow@4.2.2/build/cjs/vexflow.js"></script>
-    
+    <!-- Carrega o Tone.js versão 14.8.49 diretamente via CDN. -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
     
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    
+    <!-- Splash Screen -->
     <div id="splash-screen">
         <div class="splash-content">
             <h1 class="splash-title">🎵 Musical Theory Trainer</h1>
             <p class="splash-subtitle">A afinar os instrumentos...</p>
-            <div class="spinner"></div> </div>
+            <div class="spinner"></div> 
+        </div>
     </div>
-
-    <div class="card">
-        <h2>Musical Theory Trainer</h2>
+    <!-- Login Screen -->
+    <div id="login-screen" class="card" style="display: none;">
+        <h2>Autenticação</h2>
+        <p>Inicie sessão para guardar os seus resultados.</p>
+        <div style="margin: 20px 0;">
+            <input type="text" id="inputUser" placeholder="Nome de Utilizador" class="input-form">
+            <input type="password" id="inputPass" placeholder="Password" class="input-form">
+        </div>
+        <p id="login-msg" style="color: #f44336; font-size: 14px; min-height: 20px;"></p>
+        <div class="botoes">
+            <button id="btnEntrar" class="btn-success">Entrar</button>
+            <button id="btnRegistar" class="btn-primary">Criar Conta</button>
+        </div>
+    </div>
+    <!-- Ecrã Principal -->
+    <div id="app-screen" class="card" style="display: none;">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="margin: 0;">Musical Theory Trainer</h2>
+            <button id="btnSair" class="btn-warning" style="padding: 5px 10px; font-size: 12px; margin-left: 10px;">Sair</button>
+        </div>
         
         <p id="status">A aguardar exercício...</p>
-        
+        <!-- desenhar a pauta recorrendo ao VexFlow -->
         <div id="pauta"></div>
-
+        <!-- dropdown para escolher o tipo de exercício -->
         <div style="margin-bottom: 15px;">
             <label for="filtroExercicio" style="font-size: 14px; color: #555;"><strong>Treinar:</strong></label>
             <select id="filtroExercicio" style="padding: 8px; border-radius: 5px; font-size: 14px; border: 1px solid #ccc;">
@@ -37,21 +54,20 @@
                 <option value="Tonalidade">Apenas Tonalidades</option>
             </select>
         </div>
-
+        <!-- botões para gerar exercício e tocar a resposta -->
         <div class="botoes">
             <button id="btnGerar" class="btn-primary">🔄 Novo Exercício</button>
             <button id="btnTocar" class="btn-success" disabled>▶ Tocar</button>
         </div>
-
+        <!-- botões para escolher a resposta -->
         <div id="opcoes-resposta" class="botoes" style="margin-top: 15px;"></div>
-        
-        <!-- Caixa de justificação pedagógica, visível apenas após resposta errada -->
+        <!-- área para mostrar a explicação teórica após resposta -->
         <div id="explicacao-teorica" style="display: none; margin-top: 15px; padding: 15px; background-color: #fdf0f0; border-left: 5px solid #f44336; text-align: left; font-size: 14px; color: #333; border-radius: 4px;">
-            </div>
-
+        </div>
+        <!-- exibe a percentagem de acertos  -->
         <div id="dashboard">Taxa de Acerto: Carregue num exercício...</div>
     </div>
-
+    <!-- Carrega o script principal da aplicação -->
     <script src="app.js"></script>
 </body>
 </html>
