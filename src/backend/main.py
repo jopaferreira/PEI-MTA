@@ -17,9 +17,12 @@ import os
 import hashlib 
 
 # Importa modelo da Base de Dados
-from models import engine, Tentativa, Utilizador
+from models import engine, Tentativa, Utilizador, Base
 # Importa função para gerar exercício de tonalidade
 from music_logic import gerar_intervalo_aleatorio, gerar_escala_aleatoria, gerar_exercicio_tonalidade 
+
+# Fundamental para o RENDER: Cria as tabelas na base de dados (se ainda não existirem)
+Base.metadata.create_all(bind=engine)
 
 # Sessões para comunicação com a Base de Dados - SQLite
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
