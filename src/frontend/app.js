@@ -51,7 +51,7 @@ async function gerirAutenticacao(rota) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username: user, password: pass })
         });
-        
+
         const dados = await resposta.json();
         // Se a API retornar um erro, mostra a mensagem de erro
         if (dados.status === "erro") {
@@ -59,14 +59,14 @@ async function gerirAutenticacao(rota) {
         } else {
             // Sucesso! Grava o ID, esconde o ecrã de login e mostra a aplicação
             localStorage.setItem("userId", dados.id);
-            
+
             const loginScreen = document.getElementById("login-screen");
             const appScreen = document.getElementById("app-screen");
             // Limpa os campos e mensagens para a próxima vez que o utilizador se autenticar
             if (loginScreen) loginScreen.style.display = "none";
             if (appScreen) appScreen.style.display = "block";
-            inputPass.value = ""; 
-            if (msgBox) msgBox.innerText = ""; 
+            inputPass.value = "";
+            if (msgBox) msgBox.innerText = "";
             // Atualiza o dashboard com os resultados do utilizador
             atualizarDashboard();
         }
@@ -116,13 +116,13 @@ if (btnGerar) {
             const resposta = await fetch(`${API_URL}/api/exercicio/novo?filtro=${filtroSelecionado}`);
             const dados = await resposta.json();
             // Atualiza as variáveis globais com os dados do exercício recebido
-            melodiaAtual = dados.notas || []; 
-            exercicioAtual = dados; 
+            melodiaAtual = dados.notas || [];
+            exercicioAtual = dados;
             // Atualiza o status do exercício e a visibilidade do botão de tocar em função do tipo de exercício
             const status = document.getElementById("status");
             if (status) {
                 status.innerText = dados.mensagem;
-                status.style.color = "#333"; 
+                status.style.color = "#333";
             }
             // Esconde o botão de tocar para exercícios de tonalidade (não há melodia para tocar)
             const btnTocar = document.getElementById("btnTocar");
@@ -135,8 +135,8 @@ if (btnGerar) {
                 }
             }
             // Desenha a pauta com as notas do exercício e cria os botões de resposta
-            desenharPauta(dados); 
-            criarBotoesResposta(dados.opcoes, dados.detalhe); 
+            desenharPauta(dados);
+            criarBotoesResposta(dados.opcoes, dados.detalhe);
             atualizarDashboard();
         } catch (e) {
             const status = document.getElementById("status");
@@ -150,29 +150,29 @@ if (btnGerar) {
 function criarBotoesResposta(opcoes, respostaCerta) {
     const divOpcoes = document.getElementById("opcoes-resposta");
     if (!divOpcoes) return;
-    
-    divOpcoes.innerHTML = ""; 
-    
+
+    divOpcoes.innerHTML = "";
+
     opcoes.forEach(opcao => {
         const btn = document.createElement("button");
         btn.innerText = opcao;
-        btn.className = "btn-warning"; 
+        btn.className = "btn-warning";
 
         btn.addEventListener("click", async () => {
             const acertou = (opcao === respostaCerta);
             const todosBotoes = divOpcoes.querySelectorAll("button");
             // Desativa todos os botões e atribui cores: verde para a resposta certa, vermelho para a resposta errada selecionada
             todosBotoes.forEach(b => {
-                b.disabled = true; 
+                b.disabled = true;
                 if (b.innerText === respostaCerta) {
-                    b.style.backgroundColor = "#4CAF50"; 
+                    b.style.backgroundColor = "#4CAF50";
                 } else if (b === btn && !acertou) {
-                    b.style.backgroundColor = "#f44336"; 
+                    b.style.backgroundColor = "#f44336";
                 }
             });
             // Atualiza o status da resposta e mostra a explicação se a resposta estiver errada
             const status = document.getElementById("status");
-            const divExplicacao = document.getElementById("explicacao-teorica"); 
+            const divExplicacao = document.getElementById("explicacao-teorica");
             // Se a resposta estiver correta, mostra mensagem de sucesso. Se estiver errada, mostra a resposta certa e a explicação.
             if (acertou) {
                 if (status) {
@@ -193,13 +193,13 @@ function criarBotoesResposta(opcoes, respostaCerta) {
             const userId = localStorage.getItem("userId");
             if (userId && exercicioAtual) {
                 const payload = {
-                    utilizador_id: parseInt(userId), 
+                    utilizador_id: parseInt(userId),
                     tipo_exercicio: exercicioAtual.tipo_exercicio,
                     detalhe: respostaCerta,
                     resposta_dada: opcao,
                     correta: acertou
                 };
-                
+
                 try {
                     await fetch(`${API_URL}/api/tentativas/`, {
                         method: "POST",
@@ -211,10 +211,10 @@ function criarBotoesResposta(opcoes, respostaCerta) {
                 }
             }
 
-            atualizarDashboard(); 
+            atualizarDashboard();
         });
 
-        divOpcoes.appendChild(btn); 
+        divOpcoes.appendChild(btn);
     });
 }
 
@@ -223,12 +223,12 @@ function criarBotoesResposta(opcoes, respostaCerta) {
 async function atualizarDashboard() {
     const userId = localStorage.getItem("userId");
     const dashboard = document.getElementById("dashboard");
-    if (!userId || !dashboard) return; 
-    
+    if (!userId || !dashboard) return;
+
     try {
         const resposta = await fetch(`${API_URL}/api/dashboard/${userId}`);
         const dados = await resposta.json();
-        dashboard.innerText = 
+        dashboard.innerText =
             `Total Respostas: ${dados.total_tentativas} | Taxa de Acerto: ${dados.taxa_acerto_global}%`;
     } catch (e) {
         dashboard.innerText = "Métricas indisponíveis.";
@@ -239,7 +239,7 @@ async function atualizarDashboard() {
 // Desenho da Pauta Musical (VexFlow)
 function desenharPauta(dados) {
     if (!divPauta) return;
-    divPauta.innerHTML = ""; 
+    divPauta.innerHTML = "";
     // Define a largura da pauta com base no número de notas: mais notas exigem uma pauta mais longa
     const larguraPauta = (dados.notas && dados.notas.length > 2) ? 550 : 250;
     // Cria o renderer do VexFlow e a pauta, adicionando a clave de sol e, se for um exercício de tonalidade, a armação de clave correspondente
@@ -252,13 +252,13 @@ function desenharPauta(dados) {
         // Atribui número de acidentes para a armação de clave 
         const vexflowKeys = {
             "-7": "Cb", "-6": "Gb", "-5": "Db", "-4": "Ab", "-3": "Eb", "-2": "Bb", "-1": "F",
-            "0": "C", 
+            "0": "C",
             "1": "G", "2": "D", "3": "A", "4": "E", "5": "B", "6": "F#", "7": "C#"
         };
         const chave = vexflowKeys[dados.num_acidentes.toString()];
         stave.addKeySignature(chave);
         stave.setContext(context).draw();
-        return; 
+        return;
     }
     // Para exercícios de leitura de notas, desenha a pauta com as notas fornecidas pela API
     stave.addTimeSignature("4/4").setContext(context).draw();
@@ -268,10 +268,10 @@ function desenharPauta(dados) {
         let sinal = null;
         if (nota.vexflow.includes("#")) {
             sinal = new VF.Accidental("#");
-        } else if (nota.vexflow.charAt(1) === "b") { 
+        } else if (nota.vexflow.charAt(1) === "b") {
             sinal = new VF.Accidental("b");
         }
-        
+
         if (sinal) {
             try { staveNote.addModifier(sinal, 0); } catch (e) { staveNote.addModifier(0, sinal); }
         }
