@@ -28,6 +28,7 @@
 - [x] **Justificação Pedagógica** — Apresentação de explicação teórica detalhada após resposta errada.
 - [x] **Filtro de Treino** — Possibilidade de o utilizador escolher o tipo de exercício que quer praticar (Mistura, Intervalos, Escalas ou Tonalidades) através de dropdown.
 - [x] **Alojamento em Produção** — Servidor FastAPI configurado com resolução de caminhos absolutos (módulo `os`) para servir nativamente os ficheiros estáticos, com a aplicação totalmente alojada e estável na nuvem (Render).
+- [x] **Autenticação e Perfis de Utilizador** — Sistema de registo e login com encriptação de passwords (SHA-256), garantindo persistência e isolamento do histórico de métricas (Dashboard) por utilizador.
 
 ---
 
@@ -43,8 +44,6 @@ O trabalho atual foca-se nas etapas finais do desenvolvimento:
 - [ ] **Polimento (UI/UX)** — Pequenas afinações estéticas, de margens e responsividade para garantir a melhor experiência possível.
 
 **Funcionalidades transitadas para "Trabalho Futuro":**
-
-- **Autenticação de Múltiplos Utilizadores:** A base de dados foi desenhada de raiz para suportar vários perfis (tabela `Utilizador`). A implementação de um sistema completo de *login* não foi efetuada, respeitando o calendário do MVP e visando a estabilização da arquitetura base na nuvem.
 
 ---
 
@@ -134,4 +133,4 @@ uvicorn main:app --reload
 
 ---
 
-*Última actualização: 24 de maio de 2026 · Sem. 11*
+*Última actualização: 31 de maio de 2026 · Sem. 12*
