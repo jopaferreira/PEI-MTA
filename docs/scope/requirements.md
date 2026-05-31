@@ -73,7 +73,7 @@
 
 ## Histórico de alterações
 
-| Versão | Data | Alteração | Razão |
-|--------|------|-----------|-------|
-| 1.0 | 04/04/2026 | Versão inicial completa | Levantamento de requisitos para o MVP |
-
+| Versão |     Data   |        Alteração        |                                                 Razão                                              |
+|--------|------------|-------------------------|----------------------------------------------------------------------------------------------------|
+| 1.0    | 04/04/2026 | Versão inicial completa | Levantamento de requisitos para o MVP                                                              |
+| 1.1    | 31/05/2026 | Consolidação do MVP     | O requisito RF10 (Autenticação) foi promovido e implementado com sucesso na versão final entregue. |
