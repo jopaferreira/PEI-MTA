@@ -96,9 +96,9 @@
 
 ## Sem. 12 · 26–30 mai
 
-**Feito:**  
-**Bloqueou:**  
-**Próxima semana:**
+**Feito:** Conclusão do MVP a 100% (autenticação e persistência individual com SQLite), correções para deploy no Render e estruturação dos Casos de Teste Funcionais. 
+**Bloqueou:** Nada.
+**Próxima semana:** Recolha das evidências dos testes (capturas de ecrã) e início da redação do Relatório Final.
 
 ---
 
