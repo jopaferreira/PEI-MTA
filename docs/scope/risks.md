@@ -28,3 +28,4 @@
 |------|-------|--------|--------|
 | 04/04/2026 | Todos | Criação da matriz inicial de riscos para a Entrega 1 | Em curso |
 | 23/05/2026 | R05 | Identificação de perda de dados no Render por inatividade (Contentor efémero). | Mitigado/Aceite |
+| 31/05/2026 | R02, R03 | Conclusão do MVP e testes funcionais confirmam a estabilidade do motor procedimental e a perfeita sincronia entre a pauta visual e o áudio gerado. | Resolvido |
