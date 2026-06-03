@@ -102,16 +102,23 @@ def gerar_intervalo_aleatorio():
         "explicacao": explicacao 
     }
 
-# Função para gerar um exercício de escala
+# Função para gerar um exercício de escala ou modo grego
 def gerar_escala_aleatoria():
     base = random.choice(NOTAS_BASE_DISPONIVEIS)
-    # Define os tipos de escalas e os seus padrões de meios tons a partir da tónica
+    
+    # Padrões de meios-tons a partir da tónica
     tipos_escalas = {
-        "Escala Maior": [0, 2, 4, 5, 7, 9, 11, 12],
-        "Escala Menor Natural": [0, 2, 3, 5, 7, 8, 10, 12],
-        "Escala Menor Harmónica": [0, 2, 3, 5, 7, 8, 11, 12]
+        "Escala Maior (Jónio)": [0, 2, 4, 5, 7, 9, 11, 12],
+        "Escala Menor Natural (Eólio)": [0, 2, 3, 5, 7, 8, 10, 12],
+        "Escala Menor Harmónica": [0, 2, 3, 5, 7, 8, 11, 12],
+        "Modo Dórico": [0, 2, 3, 5, 7, 9, 10, 12],
+        "Modo Frígio": [0, 1, 3, 5, 7, 8, 10, 12],
+        "Modo Lídio": [0, 2, 4, 6, 7, 9, 11, 12],
+        "Modo Mixolídio": [0, 2, 4, 5, 7, 9, 10, 12],
+        "Modo Lócrio": [0, 1, 3, 4, 6, 8, 10, 12]
     }
-    # Sorteia uma escala, obtém o nome e o padrão de meios tons correspondente
+    
+    # Sorteia uma escala, obtém o nome e o padrão correspondente
     nome_escala_correta, padrao_meios_tons = random.choice(list(tipos_escalas.items()))
     
     notas_escala = []
@@ -120,14 +127,22 @@ def gerar_escala_aleatoria():
         nota = obter_nota_ortografica(base["som"] + meios_tons, base["letra"] + salto_alfabeto)
         notas_escala.append(nota)
         
-    opcoes_resposta = list(tipos_escalas.keys())
+    # Gera opções de resposta: A certa + 3 distratores aleatórios 
+    todas_escalas = list(tipos_escalas.keys())
+    todas_escalas.remove(nome_escala_correta)
+    opcoes_resposta = random.sample(todas_escalas, 3) + [nome_escala_correta]
     random.shuffle(opcoes_resposta)
     
-    # Justificação Pedagógica
+    # Justificação Pedagógica alargada
     explicacoes_teoricas = {
-        "Escala Maior": "A Escala Maior segue a estrutura de intervalos: Tom - Tom - meio-tom - Tom - Tom - Tom - meio-tom.",
-        "Escala Menor Natural": "A Escala Menor Natural segue a estrutura: Tom - meio-tom - Tom - Tom - meio-tom - Tom - Tom.",
-        "Escala Menor Harmónica": "A Escala Menor Harmónica baseia-se na escala menor natural, mas o seu 7º grau é elevado num meio-tom para criar a sensível."
+        "Escala Maior (Jónio)": "O modo Jónio (Escala Maior) tem meios-tons entre o 3º/4º e 7º/8º graus.",
+        "Escala Menor Natural (Eólio)": "O modo Eólio (Menor Natural) tem meios-tons entre o 2º/3º e 5º/6º graus.",
+        "Escala Menor Harmónica": "A Menor Harmónica eleva o 7º grau da escala menor natural num meio-tom para criar a sensível.",
+        "Modo Dórico": "O modo Dórico é uma escala menor com a 6ª maior (meios-tons: 2º/3º e 6º/7º).",
+        "Modo Frígio": "O modo Frígio é uma escala menor caracterizada pela sua 2ª menor (meios-tons: 1º/2º e 5º/6º).",
+        "Modo Lídio": "O modo Lídio é uma escala maior caracterizada pela sua 4ª aumentada (meios-tons: 4º/5º e 7º/8º).",
+        "Modo Mixolídio": "O modo Mixolídio é uma escala maior com a 7ª menor (meios-tons: 3º/4º e 6º/7º).",
+        "Modo Lócrio": "O modo Lócrio é o único modo com uma 5ª diminuta (meios-tons: 1º/2º e 4º/5º)."
     }
     
     return {
