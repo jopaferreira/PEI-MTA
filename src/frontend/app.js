@@ -124,14 +124,26 @@ if (btnGerar) {
                 status.innerText = dados.mensagem;
                 status.style.color = "#333";
             }
-            // Esconde o botão de tocar para exercícios de tonalidade (não há melodia para tocar)
+            // Gestão do Botão Tocar e da Checkbox de Ocultar Pauta
             const btnTocar = document.getElementById("btnTocar");
-            if (btnTocar) {
-                if (dados.tipo_exercicio === "Tonalidade") {
-                    btnTocar.style.display = "none";
-                } else {
+            const chkOcultarPauta = document.getElementById("chkOcultarPauta");
+
+            if (dados.tipo_exercicio === "Tonalidade") {
+                if (btnTocar) btnTocar.style.display = "none";
+                // Desativa a opção de ocultar pauta para Tonalidades (precisam do visual)
+                if (chkOcultarPauta) {
+                    chkOcultarPauta.disabled = true;
+                    if (divPauta) divPauta.style.display = "flex"; // Força a visualização
+                }
+            } else {
+                if (btnTocar) {
                     btnTocar.style.display = "inline-block";
                     btnTocar.disabled = false;
+                }
+                // Reativa a checkbox e aplica a visibilidade escolhida
+                if (chkOcultarPauta) {
+                    chkOcultarPauta.disabled = false;
+                    if (divPauta) divPauta.style.display = chkOcultarPauta.checked ? "none" : "flex";
                 }
             }
             // Desenha a pauta com as notas do exercício e cria os botões de resposta
@@ -295,5 +307,19 @@ if (btnTocar) {
         melodiaAtual.forEach((nota, index) => {
             synth.triggerAttackRelease(nota.tone, "4n", tempoAtual + (index * 0.5));
         });
+    });
+}
+
+// Ocultar/Mostrar Pauta (Treino Auditivo)
+const chkOcultarPauta = document.getElementById("chkOcultarPauta");
+if (chkOcultarPauta && divPauta) {
+    chkOcultarPauta.addEventListener("change", (e) => {
+        // Bloqueia a ação se for um exercício de Tonalidade
+        if (exercicioAtual && exercicioAtual.tipo_exercicio === "Tonalidade") {
+            divPauta.style.display = "flex";
+            return;
+        }
+        // Alterna entre display 'none' (escondido) e 'flex' 
+        divPauta.style.display = e.target.checked ? "none" : "flex";
     });
 }
