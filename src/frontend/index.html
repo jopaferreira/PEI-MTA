@@ -9,6 +9,8 @@
     <script src="https://cdn.jsdelivr.net/npm/vexflow@4.2.2/build/cjs/vexflow.js"></script>
     <!-- Carrega o Tone.js versão 14.8.49 diretamente via CDN. -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <!-- Carrega o Chart.js versão 3.9.1 diretamente via CDN. -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -77,8 +79,27 @@
         <div id="explicacao-teorica"
             style="display: none; margin-top: 15px; padding: 15px; background-color: #fdf0f0; border-left: 5px solid #f44336; text-align: left; font-size: 14px; color: #333; border-radius: 4px;">
         </div>
-        <!-- exibe a percentagem de acertos  -->
-        <div id="dashboard">Taxa de Acerto: Carregue num exercício...</div>
+        <!-- exibe métricas  -->
+        <div id="dashboard-area" style="margin-top: 30px; border-top: 2px solid #f1f5f9; padding-top: 20px;">
+            <div style="display: flex; justify-content: space-around; margin-bottom: 20px;">
+                <div style="text-align: center;">
+                    <span style="font-size: 12px; color: #64748b;">Sessão Atual</span><br>
+                    <strong id="stat-sessao" style="font-size: 18px; color: #008CBA;">0 / 0 (0%)</strong>
+                </div>
+                <div style="text-align: center;">
+                    <span style="font-size: 12px; color: #64748b;">Histórico Global</span><br>
+                    <strong id="stat-global" style="font-size: 18px; color: #4CAF50;">0 / 0 (0%)</strong>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <button id="btnReset" class="btn-warning" style="padding: 5px 10px; font-size: 12px;">Limpar Dados</button>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 15px; justify-content: center; height: 180px; margin-top: 15px;">
+                <div style="width: 45%;"><canvas id="graficoTipos"></canvas></div>
+                <div style="width: 45%;"><canvas id="graficoEvolucao"></canvas></div>
+            </div>
+        </div>
     </div>
     <!-- Carrega o script principal da aplicação -->
     <script src="app.js"></script>

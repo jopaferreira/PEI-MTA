@@ -10,6 +10,8 @@ from pydantic import BaseModel
 
 # Bibliotecas - Base de Dados e utilitários
 from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy import func
+from datetime import date
 import random
 # Para navegar no sistema de ficheiros
 import os
@@ -118,7 +120,11 @@ def gerar_exercicio(filtro: str = "Mistura"):
         mensagem = "Qual é este intervalo?"
     elif sorteio == 1:
         exercicio = gerar_escala_aleatoria()
-        mensagem = "Qual é esta escala?"
+        # Verifica se o nome da resposta contém a palavra "Modo"
+        if "Modo" in exercicio["detalhe"]:
+            mensagem = "Qual o modo musical desta escala?"
+        else:
+            mensagem = "Qual é esta escala?"
     else:
         exercicio = gerar_exercicio_tonalidade()
         mensagem = exercicio["mensagem"]
@@ -158,25 +164,56 @@ def guardar_tentativa(tentativa: TentativaCreate, db: Session = Depends(get_db))
     
     return {"status": "sucesso", "mensagem": "Gravado na Base de Dados!"}
 
-# Dashboard de Métricas para cada utilizador
+# Dashboard de Métricas melhorado
 @app.get("/api/dashboard/{user_id}")
 def obter_metricas(user_id: int, db: Session = Depends(get_db)):
-    # Conta o número de exercícios respondidos pelo utilizador
-    total = db.query(Tentativa).filter(Tentativa.utilizador_id == user_id).count()
-    if total == 0:
-        return {"total_tentativas": 0, "taxa_acerto_global": 0}
+    tentativas = db.query(Tentativa).filter(Tentativa.utilizador_id == user_id).all()
+    if not tentativas:
+        return {"total": 0, "taxa_global": 0, "por_tipo": {}, "evolucao_diaria": []}
     
-    # Conta as respostas certas desse utilizador
-    certas = db.query(Tentativa).filter(Tentativa.utilizador_id == user_id, Tentativa.correta == True).count()
+    total = len(tentativas)
+    certas = sum(1 for t in tentativas if t.correta)
     
-    # Calcula a percentagem de acertos
-    taxa = (certas / total) * 100
+    # Agregação por Tipo
+    tipos = {"Intervalo": [0,0], "Escala": [0,0], "Tonalidade": [0,0]}
+    diario = {} # Guarda as tentativas por dia no formato "YYYY-MM-DD"
+    
+    for t in tentativas:
+        if t.tipo_exercicio in tipos:
+            tipos[t.tipo_exercicio][1] += 1
+            if t.correta:
+                tipos[t.tipo_exercicio][0] += 1
+                
+        # Extrai a data da tentativa (assumindo a coluna data_hora no models.py)
+        if hasattr(t, 'data_hora') and t.data_hora:
+            data_str = t.data_hora.strftime("%Y-%m-%d")
+            if data_str not in diario:
+                diario[data_str] = [0, 0] # [certas, totais]
+            diario[data_str][1] += 1
+            if t.correta:
+                diario[data_str][0] += 1
+
+    # Formatar saídas em percentagens
+    por_tipo = {k: round((v[0]/v[1]*100), 1) if v[1] > 0 else 0 for k, v in tipos.items()}
+    
+    evolucao_diaria = [
+        {"data": d, "taxa": round((diario[d][0] / diario[d][1] * 100), 1)} 
+        for d in sorted(diario.keys())
+    ]
     
     return {
-        "total_tentativas": total,
-        "respostas_certas": certas,
-        "taxa_acerto_global": round(taxa, 2) # valor arredondado a 2 casas decimais
+        "total": total,
+        "taxa_global": round((certas / total) * 100, 1),
+        "por_tipo": por_tipo,
+        "evolucao_diaria": evolucao_diaria
     }
+
+# Rota de Hard Reset
+@app.delete("/api/usuarios/{user_id}/reset")
+def reset_estatisticas(user_id: int, db: Session = Depends(get_db)):
+    db.query(Tentativa).filter(Tentativa.utilizador_id == user_id).delete()
+    db.commit()
+    return {"status": "sucesso", "mensagem": "Estatísticas reiniciadas com sucesso."}
 
 # SERVIDOR DE FICHEIROS
 # Encontra a pasta onde ficheiro main.py está

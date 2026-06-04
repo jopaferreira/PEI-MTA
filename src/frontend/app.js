@@ -27,6 +27,11 @@ const divPauta = document.getElementById("pauta");
 let melodiaAtual = [];
 let synth;
 let exercicioAtual = null;
+// Para as métricas melhoradas
+let sessaoTotal = 0;
+let sessaoCertas = 0;
+let graficoTiposInstancia = null;
+let graficoEvolucaoInstancia = null;
 
 // AUTENTICAÇÃO
 // Função para gerir o login e o registo
@@ -95,6 +100,8 @@ if (btnSair) {
         if (appScreen) appScreen.style.display = "none";
         if (loginScreen) loginScreen.style.display = "block";
     });
+    sessaoTotal = 0;
+    sessaoCertas = 0;
 }
 
 
@@ -172,6 +179,9 @@ function criarBotoesResposta(opcoes, respostaCerta) {
 
         btn.addEventListener("click", async () => {
             const acertou = (opcao === respostaCerta);
+            // incrementa as variáveis da sessão - métricas melhoradas: total de tentativas e acertos na sessão atual
+            sessaoTotal++;
+            if (acertou) sessaoCertas++;
             const todosBotoes = divOpcoes.querySelectorAll("button");
             // Desativa todos os botões e atribui cores: verde para a resposta certa, vermelho para a resposta errada selecionada
             todosBotoes.forEach(b => {
@@ -231,20 +241,85 @@ function criarBotoesResposta(opcoes, respostaCerta) {
 }
 
 
-// Obtém e atualiza os resultados no Dashboard
+// Obtém e atualiza os resultados no Dashboard e Gráficos
 async function atualizarDashboard() {
     const userId = localStorage.getItem("userId");
-    const dashboard = document.getElementById("dashboard");
-    if (!userId || !dashboard) return;
+    if (!userId) return;
+
+    // Atualiza texto da Sessão Atual
+    const statSessao = document.getElementById("stat-sessao");
+    const taxaSessao = sessaoTotal > 0 ? ((sessaoCertas / sessaoTotal) * 100).toFixed(1) : 0;
+    if (statSessao) statSessao.innerText = `${sessaoCertas} / ${sessaoTotal} (${taxaSessao}%)`;
 
     try {
         const resposta = await fetch(`${API_URL}/api/dashboard/${userId}`);
         const dados = await resposta.json();
-        dashboard.innerText =
-            `Total Respostas: ${dados.total_tentativas} | Taxa de Acerto: ${dados.taxa_acerto_global}%`;
+        
+        // Atualiza texto Global
+        const statGlobal = document.getElementById("stat-global");
+        if (statGlobal) statGlobal.innerText = `${dados.total} exercícios (${dados.taxa_global}%)`;
+
+        // Elimina gráficos antigos antes de redesenhar para evitar sobreposição
+        if (graficoTiposInstancia) graficoTiposInstancia.destroy();
+        if (graficoEvolucaoInstancia) graficoEvolucaoInstancia.destroy();
+
+        // Gráfico de Barras: Acertos por Tipo de Exercício
+        const ctxTipos = document.getElementById('graficoTipos').getContext('2d');
+        graficoTiposInstancia = new Chart(ctxTipos, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(dados.por_tipo),
+                datasets: [{
+                    label: '% Acerto',
+                    data: Object.values(dados.por_tipo),
+                    backgroundColor: ['#4CAF50', '#008CBA', '#f0ad4e']
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } } }
+        });
+
+        // Gráfico de Linhas: Evolução Diária
+        const ctxEvolucao = document.getElementById('graficoEvolucao').getContext('2d');
+        const datas = dados.evolucao_diaria.map(d => d.data);
+        const taxas = dados.evolucao_diaria.map(d => d.taxa);
+        
+        graficoEvolucaoInstancia = new Chart(ctxEvolucao, {
+            type: 'line',
+            data: {
+                labels: datas.length > 0 ? datas : ['Hoje'],
+                datasets: [{
+                    label: 'Taxa Diária (%)',
+                    data: taxas.length > 0 ? taxas : [0],
+                    borderColor: '#f44336',
+                    tension: 0.3,
+                    fill: true,
+                    backgroundColor: 'rgba(244, 67, 54, 0.1)'
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } } }
+        });
+
     } catch (e) {
-        dashboard.innerText = "Métricas indisponíveis.";
+        console.error("Erro ao carregar métricas analíticas.");
     }
+}
+
+// Configuração do Hard Reset
+const btnReset = document.getElementById("btnReset");
+if (btnReset) {
+    btnReset.addEventListener("click", async () => {
+        if (confirm("Tem a certeza que deseja apagar todo o seu histórico? Esta ação é irreversível.")) {
+            const userId = localStorage.getItem("userId");
+            try {
+                await fetch(`${API_URL}/api/usuarios/${userId}/reset`, { method: "DELETE" });
+                sessaoTotal = 0;
+                sessaoCertas = 0;
+                atualizarDashboard();
+            } catch (e) {
+                console.error("Erro ao reiniciar dados.");
+            }
+        }
+    });
 }
 
 
