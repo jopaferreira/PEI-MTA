@@ -263,40 +263,66 @@ async function atualizarDashboard() {
         if (graficoTiposInstancia) graficoTiposInstancia.destroy();
         if (graficoEvolucaoInstancia) graficoEvolucaoInstancia.destroy();
 
-        // Gráfico de Barras: Acertos por Tipo de Exercício
+        // Gráfico de Barras: Taxa desagregada por tipo de exercício
         const ctxTipos = document.getElementById('graficoTipos').getContext('2d');
         graficoTiposInstancia = new Chart(ctxTipos, {
             type: 'bar',
             data: {
                 labels: Object.keys(dados.por_tipo),
                 datasets: [{
-                    label: '% Acerto',
+                    label: '% de Acerto',
                     data: Object.values(dados.por_tipo),
-                    backgroundColor: ['#4CAF50', '#008CBA', '#f0ad4e']
+                    backgroundColor: ['#4CAF50', '#008CBA', '#f0ad4e'],
+                    borderRadius: 5
                 }]
             },
-            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } } }
+            options: { 
+                responsive: true, maintainAspectRatio: false, 
+                scales: { y: { beginAtZero: true, max: 100 } },
+                plugins: {
+                    title: { display: true, text: 'Desempenho por Tópico' },
+                    legend: { display: false }
+                }
+            }
         });
 
-        // Gráfico de Linhas: Evolução Diária
+        // Gráfico de Linhas: Evolução Diária vs Acumulada
         const ctxEvolucao = document.getElementById('graficoEvolucao').getContext('2d');
         const datas = dados.evolucao_diaria.map(d => d.data);
-        const taxas = dados.evolucao_diaria.map(d => d.taxa);
+        const taxasDia = dados.evolucao_diaria.map(d => d.taxa_dia);
+        const taxasAcum = dados.evolucao_diaria.map(d => d.taxa_acumulada);
         
         graficoEvolucaoInstancia = new Chart(ctxEvolucao, {
             type: 'line',
             data: {
                 labels: datas.length > 0 ? datas : ['Hoje'],
-                datasets: [{
-                    label: 'Taxa Diária (%)',
-                    data: taxas.length > 0 ? taxas : [0],
-                    borderColor: '#f44336',
-                    tension: 0.3,
-                    fill: true,
-                    backgroundColor: 'rgba(244, 67, 54, 0.1)'
-                }]
+                datasets: [
+                    {
+                        label: 'Média do Dia (%)',
+                        data: taxasDia.length > 0 ? taxasDia : [0],
+                        borderColor: '#64748b',
+                        borderDash: [5, 5], // Linha tracejada para representar o dia isolado
+                        tension: 0.3,
+                        fill: false
+                    },
+                    {
+                        label: 'Acumulada Histórica (%)',
+                        data: taxasAcum.length > 0 ? taxasAcum : [0],
+                        borderColor: '#4361ee',
+                        borderWidth: 3,
+                        tension: 0.3,
+                        fill: true,
+                        backgroundColor: 'rgba(67, 97, 238, 0.1)'
+                    }
+                ]
             },
-            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } } }
+            options: { 
+                responsive: true, maintainAspectRatio: false, 
+                scales: { y: { beginAtZero: true, max: 100 } },
+                plugins: {
+                    title: { display: true, text: 'Progresso ao longo do tempo' }
+                }
+            }
         });
 
     } catch (e) {

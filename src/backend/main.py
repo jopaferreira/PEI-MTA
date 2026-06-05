@@ -167,16 +167,18 @@ def guardar_tentativa(tentativa: TentativaCreate, db: Session = Depends(get_db))
 # Dashboard de Métricas melhorado
 @app.get("/api/dashboard/{user_id}")
 def obter_metricas(user_id: int, db: Session = Depends(get_db)):
-    tentativas = db.query(Tentativa).filter(Tentativa.utilizador_id == user_id).all()
+    # Ordenar por data - garante cálculo correto da evolução acumulada
+    tentativas = db.query(Tentativa).filter(Tentativa.utilizador_id == user_id).order_by(Tentativa.data_hora.asc()).all()
+    
     if not tentativas:
         return {"total": 0, "taxa_global": 0, "por_tipo": {}, "evolucao_diaria": []}
     
     total = len(tentativas)
     certas = sum(1 for t in tentativas if t.correta)
     
-    # Agregação por Tipo
+    # Taxa de acertos desagregada por Tipo
     tipos = {"Intervalo": [0,0], "Escala": [0,0], "Tonalidade": [0,0]}
-    diario = {} # Guarda as tentativas por dia no formato "YYYY-MM-DD"
+    diario = {} 
     
     for t in tentativas:
         if t.tipo_exercicio in tipos:
@@ -184,22 +186,42 @@ def obter_metricas(user_id: int, db: Session = Depends(get_db)):
             if t.correta:
                 tipos[t.tipo_exercicio][0] += 1
                 
-        # Extrai a data da tentativa (assumindo a coluna data_hora no models.py)
+        # Agrupada por dia
         if hasattr(t, 'data_hora') and t.data_hora:
             data_str = t.data_hora.strftime("%Y-%m-%d")
-            if data_str not in diario:
-                diario[data_str] = [0, 0] # [certas, totais]
-            diario[data_str][1] += 1
-            if t.correta:
-                diario[data_str][0] += 1
+        else:
+            data_str = date.today().strftime("%Y-%m-%d") # Fallback
+            
+        if data_str not in diario:
+            diario[data_str] = {"certas_dia": 0, "total_dia": 0}
+            
+        diario[data_str]["total_dia"] += 1
+        if t.correta:
+            diario[data_str]["certas_dia"] += 1
 
-    # Formatar saídas em percentagens
     por_tipo = {k: round((v[0]/v[1]*100), 1) if v[1] > 0 else 0 for k, v in tipos.items()}
     
-    evolucao_diaria = [
-        {"data": d, "taxa": round((diario[d][0] / diario[d][1] * 100), 1)} 
-        for d in sorted(diario.keys())
-    ]
+    # Taxa por Dia e Acumulada
+    evolucao_diaria = []
+    certas_acumuladas = 0
+    total_acumulado = 0
+    
+    for d in sorted(diario.keys()):
+        c_dia = diario[d]["certas_dia"]
+        t_dia = diario[d]["total_dia"]
+        
+        # Incrementa acumulado histórico
+        certas_acumuladas += c_dia
+        total_acumulado += t_dia
+        
+        taxa_dia = round((c_dia / t_dia * 100), 1) if t_dia > 0 else 0
+        taxa_acum = round((certas_acumuladas / total_acumulado * 100), 1) if total_acumulado > 0 else 0
+        
+        evolucao_diaria.append({
+            "data": d, 
+            "taxa_dia": taxa_dia,
+            "taxa_acumulada": taxa_acum
+        })
     
     return {
         "total": total,
