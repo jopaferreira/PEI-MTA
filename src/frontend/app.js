@@ -463,13 +463,33 @@ function desenharPauta(dados) {
 }
 
 
-// Reprodução de Áudio (Tone.js)
+// Reprodução de Áudio (Tone.js) com seleção de timbre
 const btnTocar = document.getElementById("btnTocar");
 if (btnTocar) {
     btnTocar.addEventListener("click", async () => {
         if (melodiaAtual.length === 0) return;
         await Tone.start();
-        if (!synth) synth = new Tone.Synth().toDestination();
+        
+        const seletorTimbre = document.getElementById("seletorTimbre");
+        const tipoTimbre = seletorTimbre ? seletorTimbre.value : "Synth";
+
+        // Limpa o sintetizador anterior para evitar sobreposição
+        if (synth) {
+            synth.dispose();
+        }
+
+        // Novo sintetizador com base na escolha do utilizador para o timbre 
+        if (tipoTimbre === "FMSynth") {
+            synth = new Tone.FMSynth().toDestination();
+        } else if (tipoTimbre === "AMSynth") {
+            synth = new Tone.AMSynth().toDestination();
+        } else if (tipoTimbre === "PluckSynth") {
+            synth = new Tone.PluckSynth().toDestination();
+        } else {
+            // Lida automaticamente com: "sine", "triangle", "square" e "sawtooth"
+            synth = new Tone.Synth({ oscillator: { type: tipoTimbre } }).toDestination();
+        }
+
         const tempoAtual = Tone.now();
         melodiaAtual.forEach((nota, index) => {
             synth.triggerAttackRelease(nota.tone, "4n", tempoAtual + (index * 0.5));

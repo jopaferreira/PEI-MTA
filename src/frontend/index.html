@@ -59,15 +59,31 @@
         <div id="pauta"></div>
 
         <!-- dropdown para escolher o tipo de exercício -->
-        <div style="margin-bottom: 15px;">
-            <label for="filtroExercicio" style="font-size: 14px; color: #555;"><strong>Treinar:</strong></label>
-            <select id="filtroExercicio"
-                style="padding: 8px; border-radius: 5px; font-size: 14px; border: 1px solid #ccc;">
-                <option value="Mistura">Intervalos, Escalas e Tonalidades, aleatoriamente</option>
-                <option value="Intervalo">Apenas Intervalos</option>
-                <option value="Escala">Apenas Escalas</option>
-                <option value="Tonalidade">Apenas Tonalidades</option>
-            </select>
+        <div style="margin-bottom: 15px; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+            <div>
+                <label for="filtroExercicio" style="font-size: 14px; color: #555;"><strong>Treinar:</strong></label>
+                <select id="filtroExercicio"
+                    style="padding: 8px; border-radius: 5px; font-size: 14px; border: 1px solid #ccc;">
+                    <option value="Mistura">Intervalos, Escalas e Tonalidades</option>
+                    <option value="Intervalo">Apenas Intervalos</option>
+                    <option value="Escala">Apenas Escalas</option>
+                    <option value="Tonalidade">Apenas Tonalidades</option>
+                </select>
+            </div>
+            <!-- dropdown para escolha do instrumento -->
+            <div>
+                <label for="seletorTimbre" style="font-size: 14px; color: #555;"><strong>Instrumento:</strong></label>
+                <select id="seletorTimbre"
+                    style="padding: 8px; border-radius: 5px; font-size: 14px; border: 1px solid #ccc;">
+                    <option value="sine">Som Genérico</option>
+                    <option value="triangle">Sintetizador Suave</option>
+                    <option value="square">Jogo Retro (8-bit)</option>
+                    <option value="sawtooth">Sintetizador Metálico</option>
+                    <option value="FMSynth">Piano Elétrico</option>
+                    <option value="AMSynth">Sopro</option>
+                    <option value="PluckSynth">Guitarra / Corda</option>
+                </select>
+            </div>
         </div>
         <!-- botões para gerar exercício e tocar a resposta -->
         <div class="botoes">
