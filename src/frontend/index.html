@@ -33,9 +33,10 @@
             <input type="password" id="inputPass" placeholder="Password" class="input-form">
         </div>
         <p id="login-msg" style="color: #f44336; font-size: 14px; min-height: 20px;"></p>
-        <div class="botoes">
+        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 20px;">
             <button id="btnEntrar" class="btn-success">Entrar</button>
             <button id="btnRegistar" class="btn-primary">Criar Conta</button>
+            <button id="btnConvidado" style="background-color: #64748b; color: white;">Utilizar sem registo</button>
         </div>
     </div>
     <!-- Ecrã Principal -->
@@ -86,22 +87,24 @@
                     <span style="font-size: 12px; color: #64748b;">Sessão Atual</span><br>
                     <strong id="stat-sessao" style="font-size: 18px; color: #008CBA;">0 / 0 (0%)</strong>
                 </div>
-                <div style="text-align: center;">
-                    <span style="font-size: 12px; color: #64748b;">Histórico Global</span><br>
-                    <strong id="stat-global" style="font-size: 18px; color: #4CAF50;">0 / 0 (0%)</strong>
-                </div>
-                <div style="display: flex; align-items: center;">
-                    <button id="btnReset" class="btn-warning" style="padding: 5px 10px; font-size: 12px;">Limpar Dados</button>
+                <div id="bloco-historico" style="display: flex; gap: 20px; align-items: center;">
+                    <div style="text-align: center;">
+                        <span style="font-size: 12px; color: #64748b;">Histórico Global</span><br>
+                        <strong id="stat-global" style="font-size: 18px; color: #4CAF50;">0 / 0 (0%)</strong>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <button id="btnReset" class="btn-warning" style="padding: 5px 10px; font-size: 12px;">Limpar
+                            Dados</button>
+                    </div>
                 </div>
             </div>
-            
+
             <div style="display: flex; gap: 15px; justify-content: center; height: 180px; margin-top: 15px;">
-                <div style="width: 45%;"><canvas id="graficoTipos"></canvas></div>
-                <div style="width: 45%;"><canvas id="graficoEvolucao"></canvas></div>
+                <div id="bloco-tipos" style="width: 45%;"><canvas id="graficoTipos"></canvas></div>
+                <div id="bloco-evolucao" style="width: 45%;"><canvas id="graficoEvolucao"></canvas></div>
             </div>
         </div>
     </div>
-    <!-- Carrega o script principal da aplicação -->
     <script src="app.js"></script>
 </body>
 

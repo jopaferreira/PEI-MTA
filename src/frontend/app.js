@@ -32,6 +32,9 @@ let sessaoTotal = 0;
 let sessaoCertas = 0;
 let graficoTiposInstancia = null;
 let graficoEvolucaoInstancia = null;
+// Variável para indicar se o utilizador não pretende ter conta 
+let isGuest = false;
+let sessaoTipos = { "Intervalo": [0, 0], "Escala": [0, 0], "Tonalidade": [0, 0] }; // Rastreio local
 
 // AUTENTICAÇÃO
 // Função para gerir o login e o registo
@@ -79,6 +82,29 @@ async function gerirAutenticacao(rota) {
         if (msgBox) msgBox.innerText = "Erro de ligação ao servidor.";
     }
 }
+// Botão de Convidado - acesso sem conta e sem gravação de progresso
+const btnConvidado = document.getElementById("btnConvidado");
+if (btnConvidado) {
+    btnConvidado.addEventListener("click", () => {
+        isGuest = true;
+        localStorage.removeItem("userId"); // Garante que não há sessão ativa
+
+        document.getElementById("login-screen").style.display = "none";
+        document.getElementById("app-screen").style.display = "block";
+
+        // Oculta funcionalidades de utilizador registado
+        document.getElementById("bloco-historico").style.display = "none";
+        document.getElementById("bloco-evolucao").style.display = "none";
+        document.getElementById("bloco-tipos").style.width = "100%"; // Expande o gráfico de sessão
+
+        // Reinicia contadores locais
+        sessaoTotal = 0;
+        sessaoCertas = 0;
+        sessaoTipos = { "Intervalo": [0, 0], "Escala": [0, 0], "Tonalidade": [0, 0] };
+
+        atualizarDashboard();
+    });
+}
 
 // Verifica se os botões existem antes de adicionar os event listeners para evitar erros em páginas onde eles não estão presentes
 const btnEntrar = document.getElementById("btnEntrar");
@@ -100,8 +126,13 @@ if (btnSair) {
         if (appScreen) appScreen.style.display = "none";
         if (loginScreen) loginScreen.style.display = "block";
     });
+    // Repõe interface para o próximo utilizador
     sessaoTotal = 0;
     sessaoCertas = 0;
+    isGuest = false;
+    document.getElementById("bloco-historico").style.display = "flex";
+    document.getElementById("bloco-evolucao").style.display = "block";
+    document.getElementById("bloco-tipos").style.width = "45%";
 }
 
 
@@ -179,11 +210,9 @@ function criarBotoesResposta(opcoes, respostaCerta) {
 
         btn.addEventListener("click", async () => {
             const acertou = (opcao === respostaCerta);
-            // incrementa as variáveis da sessão - métricas melhoradas: total de tentativas e acertos na sessão atual
-            sessaoTotal++;
-            if (acertou) sessaoCertas++;
+            
             const todosBotoes = divOpcoes.querySelectorAll("button");
-            // Desativa todos os botões e atribui cores: verde para a resposta certa, vermelho para a resposta errada selecionada
+            // Desativa todos os botões e atribui cores: verde para a resposta certa, vermelho para errada
             todosBotoes.forEach(b => {
                 b.disabled = true;
                 if (b.innerText === respostaCerta) {
@@ -192,10 +221,11 @@ function criarBotoesResposta(opcoes, respostaCerta) {
                     b.style.backgroundColor = "#f44336";
                 }
             });
-            // Atualiza o status da resposta e mostra a explicação se a resposta estiver errada
+            
+            // Atualiza o status da resposta e mostra a explicação
             const status = document.getElementById("status");
             const divExplicacao = document.getElementById("explicacao-teorica");
-            // Se a resposta estiver correta, mostra mensagem de sucesso. Se estiver errada, mostra a resposta certa e a explicação.
+            
             if (acertou) {
                 if (status) {
                     status.innerText = "✨ Resposta Correta!";
@@ -211,29 +241,40 @@ function criarBotoesResposta(opcoes, respostaCerta) {
                     divExplicacao.style.display = "block";
                 }
             }
-            // Grava a tentativa do utilizador associando-a ao ID do utilizador, tipo de exercício, resposta dada e se acertou ou não
-            const userId = localStorage.getItem("userId");
-            if (userId && exercicioAtual) {
-                const payload = {
-                    utilizador_id: parseInt(userId),
-                    tipo_exercicio: exercicioAtual.tipo_exercicio,
-                    detalhe: respostaCerta,
-                    resposta_dada: opcao,
-                    correta: acertou
-                };
+            
+            // Registo de métricas e gravação na BD
+            if (exercicioAtual) {
+                // Incrementa as variáveis da sessão (Modo Registado e Convidado)
+                sessaoTotal++;
+                if (acertou) sessaoCertas++;
 
-                try {
-                    await fetch(`${API_URL}/api/tentativas/`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(payload)
-                    });
-                } catch (e) {
-                    console.error("Erro ao gravar tentativa.");
+                // Rastreio local por tipo de exercício
+                sessaoTipos[exercicioAtual.tipo_exercicio][1]++;
+                if (acertou) sessaoTipos[exercicioAtual.tipo_exercicio][0]++;
+
+                // Só envia para a Base de Dados se NÃO for convidado (isGuest = false)
+                if (!isGuest) {
+                    const userId = localStorage.getItem("userId");
+                    if (userId) {
+                        try {
+                            await fetch(`${API_URL}/api/tentativas`, {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({
+                                    utilizador_id: parseInt(userId),
+                                    tipo_exercicio: exercicioAtual.tipo_exercicio,
+                                    correta: acertou
+                                })
+                            });
+                        } catch (e) {
+                            console.error("Erro ao guardar tentativa.");
+                        }
+                    }
                 }
-            }
 
-            atualizarDashboard();
+                // Atualiza os gráficos sempre (quer seja convidado ou não)
+                atualizarDashboard();
+            }
         });
 
         divOpcoes.appendChild(btn);
@@ -243,28 +284,53 @@ function criarBotoesResposta(opcoes, respostaCerta) {
 
 // Obtém e atualiza os resultados no Dashboard e Gráficos
 async function atualizarDashboard() {
-    const userId = localStorage.getItem("userId");
-    if (!userId) return;
-
-    // Atualiza texto da Sessão Atual
+    // Atualiza o texto da Sessão Atual
     const statSessao = document.getElementById("stat-sessao");
     const taxaSessao = sessaoTotal > 0 ? ((sessaoCertas / sessaoTotal) * 100).toFixed(1) : 0;
     if (statSessao) statSessao.innerText = `${sessaoCertas} / ${sessaoTotal} (${taxaSessao}%)`;
 
+    if (graficoTiposInstancia) graficoTiposInstancia.destroy();
+    const ctxTipos = document.getElementById('graficoTipos').getContext('2d');
+
+    // utilizadores sem registo
+    if (isGuest) {
+        const dadosLocais = {};
+        for (const [tipo, valores] of Object.entries(sessaoTipos)) {
+            dadosLocais[tipo] = valores[1] > 0 ? ((valores[0] / valores[1]) * 100).toFixed(1) : 0;
+        }
+
+        graficoTiposInstancia = new Chart(ctxTipos, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(dadosLocais),
+                datasets: [{
+                    label: '% de Acerto (Sessão Atual)',
+                    data: Object.values(dadosLocais),
+                    backgroundColor: ['#4CAF50', '#008CBA', '#f0ad4e'],
+                    borderRadius: 5
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } }, plugins: { title: { display: true, text: 'Desempenho por Tópico (Sessão)' }, legend: { display: false } } }
+        });
+        return; 
+    }
+
+    // utilizadores Registados 
+    const userId = localStorage.getItem("userId");
+    if (!userId) return;
+
     try {
         const resposta = await fetch(`${API_URL}/api/dashboard/${userId}`);
         const dados = await resposta.json();
-        
+
         // Atualiza texto Global
         const statGlobal = document.getElementById("stat-global");
         if (statGlobal) statGlobal.innerText = `${dados.total} exercícios (${dados.taxa_global}%)`;
 
         // Elimina gráficos antigos antes de redesenhar para evitar sobreposição
-        if (graficoTiposInstancia) graficoTiposInstancia.destroy();
         if (graficoEvolucaoInstancia) graficoEvolucaoInstancia.destroy();
 
         // Gráfico de Barras: Taxa desagregada por tipo de exercício
-        const ctxTipos = document.getElementById('graficoTipos').getContext('2d');
         graficoTiposInstancia = new Chart(ctxTipos, {
             type: 'bar',
             data: {
@@ -276,8 +342,8 @@ async function atualizarDashboard() {
                     borderRadius: 5
                 }]
             },
-            options: { 
-                responsive: true, maintainAspectRatio: false, 
+            options: {
+                responsive: true, maintainAspectRatio: false,
                 scales: { y: { beginAtZero: true, max: 100 } },
                 plugins: {
                     title: { display: true, text: 'Desempenho por Tópico' },
@@ -291,7 +357,7 @@ async function atualizarDashboard() {
         const datas = dados.evolucao_diaria.map(d => d.data);
         const taxasDia = dados.evolucao_diaria.map(d => d.taxa_dia);
         const taxasAcum = dados.evolucao_diaria.map(d => d.taxa_acumulada);
-        
+
         graficoEvolucaoInstancia = new Chart(ctxEvolucao, {
             type: 'line',
             data: {
@@ -301,7 +367,7 @@ async function atualizarDashboard() {
                         label: 'Média do Dia (%)',
                         data: taxasDia.length > 0 ? taxasDia : [0],
                         borderColor: '#64748b',
-                        borderDash: [5, 5], // Linha tracejada para representar o dia isolado
+                        borderDash: [5, 5], 
                         tension: 0.3,
                         fill: false
                     },
@@ -316,8 +382,8 @@ async function atualizarDashboard() {
                     }
                 ]
             },
-            options: { 
-                responsive: true, maintainAspectRatio: false, 
+            options: {
+                responsive: true, maintainAspectRatio: false,
                 scales: { y: { beginAtZero: true, max: 100 } },
                 plugins: {
                     title: { display: true, text: 'Progresso ao longo do tempo' }
