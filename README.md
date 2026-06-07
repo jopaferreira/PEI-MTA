@@ -29,6 +29,10 @@
 - [x] **Filtro de Treino** — Possibilidade de o utilizador escolher o tipo de exercício que quer praticar (Mistura, Intervalos, Escalas ou Tonalidades) através de dropdown.
 - [x] **Alojamento em Produção** — Servidor FastAPI configurado com resolução de caminhos absolutos (módulo `os`) para servir nativamente os ficheiros estáticos, com a aplicação totalmente alojada e estável na nuvem (Render).
 - [x] **Autenticação e Perfis de Utilizador** — Sistema de registo e login com encriptação de passwords (SHA-256), garantindo persistência e isolamento do histórico de métricas (Dashboard) por utilizador.
+- [x] **Dashboard detalhado** — Visualização com separação entre a "Sessão Atual" e o "Histórico Global", incluindo gráficos de desempenho por tópico e evolução diária vs. acumulada.
+- [x] **Modo de Convidado** — Possibilidade de utilizar a aplicação sem registo, com dados isolados em memória RAM local.
+- [x] **Expansão do Motor Procedimental** — Inclusão dos Modos Gregos (Dórico, Frígio, Lídio, Mixolídio e Lócrio).
+- [x] **Treino Auditivo Avançado** — Funcionalidade de ocultar a pauta para focar apenas na audição, com possibilidade de seleção do timbre (Som Puro, Jogo Retro, Sopro, Corda, etc.).
 
 ---
 
@@ -133,4 +137,4 @@ uvicorn main:app --reload
 
 ---
 
-*Última actualização: 31 de maio de 2026 · Sem. 12*
+*Última actualização: 7 de junho de 2026 · Sem. 13*

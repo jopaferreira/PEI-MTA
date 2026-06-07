@@ -104,9 +104,9 @@
 
 ## Sem. 13 · 2–6 jun
 
-**Feito:**  
-**Bloqueou:**  
-**Próxima semana:**
+**Feito:**  Adicionados novos modos para identificação de escalas. Introduzida opção para ocultar a notação musical para reconhecimento puramente auditivo. Introduzida possibilidade de escolha do timbre para audição. Visualização das taxas de acerto por tipo de exercício e evolução acumulada. Permite utilizadores sem registo.
+**Bloqueou:**  Nada.
+**Próxima semana:** Revisão geral do código. Ajustes visuais. Recolha das evidências dos testes (capturas de ecrã) e início da redação do Relatório Final.
 
 ---
 
