@@ -6,7 +6,7 @@ window.addEventListener('load', () => {
     if (splashScreen) {
         setTimeout(() => {
             splashScreen.classList.add('hidden');
-            
+
             // Força o estado inicial: pauta visível e métricas ocultas
             configurarEstadoInicialOpcoes();
 
@@ -47,12 +47,12 @@ function configurarEstadoInicialOpcoes() {
     const dashboardContent = document.getElementById("dashboard-content");
 
     // 1. Notação Musical Visível por defeito (Treino auditivo desativado)
-    if (chkOcultarPauta) chkOcultarPauta.checked = false;          
-    if (divPauta) divPauta.style.display = "flex";                 
+    if (chkOcultarPauta) chkOcultarPauta.checked = false;
+    if (divPauta) divPauta.style.display = "flex";
 
     // 2. Painel Analítico Oculto por defeito (Métricas não visíveis no arranque)
-    if (chkOcultarMetricas) chkOcultarMetricas.checked = true;    
-    if (dashboardContent) dashboardContent.style.display = "none"; 
+    if (chkOcultarMetricas) chkOcultarMetricas.checked = true;
+    if (dashboardContent) dashboardContent.style.display = "none";
 }
 
 // AUTENTICAÇÃO
@@ -94,10 +94,10 @@ async function gerirAutenticacao(rota) {
             if (appScreen) appScreen.style.display = "block";
             inputPass.value = "";
             if (msgBox) msgBox.innerText = "";
-            
+
             // Garante o alinhamento das opções no login bem-sucedido
             configurarEstadoInicialOpcoes();
-            
+
             // Atualiza o dashboard com os resultados do utilizador
             atualizarDashboard();
         }
@@ -153,12 +153,12 @@ if (btnSair) {
         const loginScreen = document.getElementById("login-screen");
         if (appScreen) appScreen.style.display = "none";
         if (loginScreen) loginScreen.style.display = "block";
-        
+
         // Repõe interface e variáveis para o próximo utilizador
         sessaoTotal = 0;
         sessaoCertas = 0;
         isGuest = false;
-        
+
         const blocoHistorico = document.getElementById("bloco-historico");
         const blocoEvolucao = document.getElementById("bloco-evolucao");
         const blocoTipos = document.getElementById("bloco-tipos");
@@ -245,7 +245,7 @@ function criarBotoesResposta(opcoes, respostaCerta) {
 
         btn.addEventListener("click", async () => {
             const acertou = (opcao === respostaCerta);
-            
+
             const todosBotoes = divOpcoes.querySelectorAll("button");
             // Desativa todos os botões e atribui cores: verde para a resposta certa, vermelho para errada
             todosBotoes.forEach(b => {
@@ -256,11 +256,11 @@ function criarBotoesResposta(opcoes, respostaCerta) {
                     b.style.backgroundColor = "#f44336";
                 }
             });
-            
+
             // Atualiza o status da resposta e mostra a explicação
             const status = document.getElementById("status");
             const divExplicacao = document.getElementById("explicacao-teorica");
-            
+
             if (acertou) {
                 if (status) {
                     status.innerText = "✨ Resposta Correta!";
@@ -276,7 +276,7 @@ function criarBotoesResposta(opcoes, respostaCerta) {
                     divExplicacao.style.display = "block";
                 }
             }
-            
+
             // Registo de métricas e gravação na BD
             if (exercicioAtual) {
                 // Incrementa as variáveis da sessão (Modo Registado e Convidado)
@@ -298,6 +298,8 @@ function criarBotoesResposta(opcoes, respostaCerta) {
                                 body: JSON.stringify({
                                     utilizador_id: parseInt(userId),
                                     tipo_exercicio: exercicioAtual.tipo_exercicio,
+                                    detalhe: exercicioAtual.detalhe,
+                                    resposta_dada: opcao,
                                     correta: acertou
                                 })
                             });
@@ -347,7 +349,7 @@ async function atualizarDashboard() {
             },
             options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } }, plugins: { title: { display: true, text: 'Desempenho por Tópico (Sessão)' }, legend: { display: false } } }
         });
-        return; 
+        return;
     }
 
     // utilizadores Registados 
@@ -402,7 +404,7 @@ async function atualizarDashboard() {
                         label: 'Média do Dia (%)',
                         data: taxasDia.length > 0 ? taxasDia : [0],
                         borderColor: '#64748b',
-                        borderDash: [5, 5], 
+                        borderDash: [5, 5],
                         tension: 0.3,
                         fill: false
                     },
@@ -438,7 +440,7 @@ if (btnReset) {
         if (confirm("Tem a certeza que deseja apagar todo o seu histórico? Esta ação é irreversível.")) {
             const userId = localStorage.getItem("userId");
             try {
-                await fetch(`${API_URL}/api/usuarios/${userId}/reset`, { method: "DELETE" });
+                await fetch(`${API_URL}/api/utilizadores/${userId}/reset`, { method: "DELETE" });
                 sessaoTotal = 0;
                 sessaoCertas = 0;
                 atualizarDashboard();
@@ -504,7 +506,7 @@ if (btnTocar) {
     btnTocar.addEventListener("click", async () => {
         if (melodiaAtual.length === 0) return;
         await Tone.start();
-        
+
         const seletorTimbre = document.getElementById("seletorTimbre");
         const tipoTimbre = seletorTimbre ? seletorTimbre.value : "Synth";
 

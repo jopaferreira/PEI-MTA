@@ -34,7 +34,7 @@ class Utilizador(Base):
     id = Column(Integer, primary_key=True, index=True) # Identificador único automático
     username = Column(String, unique=True, index=True) # Nome de utilizador (não podem existir dois iguais)
     password_hash = Column(String) # Hash de segurança da password (evita que a password real seja guardada)
-    data_registo = Column(DateTime, default=datetime.utcnow) # Data e hora da criação do perfil
+    data_registo = Column(DateTime, default=lambda: datetime.now(timezone.utc)) # Data e hora da criação do perfil
 
     # Relação: Um utilizador pode ter muitas 'tentativas' de exercícios
     tentativas = relationship("Tentativa", back_populates="utilizador")

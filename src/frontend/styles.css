@@ -71,14 +71,6 @@ button:disabled {
     cursor: not-allowed;
 }
 
-/* Apresentação das métricas vindas da Base de Dados */
-#dashboard {
-    margin-top: 20px;
-    font-size: 14px;
-    color: #555;
-}
-
-
 /* ESTILOS DO SPLASH SCREEN */
 
 /* Sobreposição de ecrã inteiro */

@@ -10,8 +10,6 @@ from pydantic import BaseModel
 
 # Bibliotecas - Base de Dados e utilitários
 from sqlalchemy.orm import Session, sessionmaker
-from sqlalchemy import func
-from datetime import date
 import random
 # Para navegar no sistema de ficheiros
 import os
@@ -147,7 +145,7 @@ def gerar_exercicio(filtro: str = "Mistura"):
     return resposta
 
 # Grava Resposta 
-@app.post("/api/tentativas/")
+@app.post("/api/tentativas")
 def guardar_tentativa(tentativa: TentativaCreate, db: Session = Depends(get_db)):
     # Mapeia os dados recebidos, após validação, para o modelo do SQLAlchemy
     nova_tentativa = Tentativa(
@@ -230,8 +228,8 @@ def obter_metricas(user_id: int, db: Session = Depends(get_db)):
         "evolucao_diaria": evolucao_diaria
     }
 
-# Rota de Hard Reset
-@app.delete("/api/usuarios/{user_id}/reset")
+# Hard Reset - apaga todas as tentativas de um utilizador
+@app.delete("/api/utilizadores/{user_id}/reset")
 def reset_estatisticas(user_id: int, db: Session = Depends(get_db)):
     db.query(Tentativa).filter(Tentativa.utilizador_id == user_id).delete()
     db.commit()
