@@ -510,3 +510,14 @@ if (chkOcultarPauta && divPauta) {
         divPauta.style.display = e.target.checked ? "none" : "flex";
     });
 }
+
+// Ocultar/Mostrar Métricas 
+const chkOcultarMetricas = document.getElementById("chkOcultarMetricas");
+const dashboardContent = document.getElementById("dashboard-content");
+
+if (chkOcultarMetricas && dashboardContent) {
+    chkOcultarMetricas.addEventListener("change", (e) => {
+        // Alterna entre ocultar e mostrar as métricas
+        dashboardContent.style.display = e.target.checked ? "none" : "block";
+    });
+}
