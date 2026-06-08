@@ -6,6 +6,10 @@ window.addEventListener('load', () => {
     if (splashScreen) {
         setTimeout(() => {
             splashScreen.classList.add('hidden');
+            
+            // Força o estado inicial: pauta visível e métricas ocultas
+            configurarEstadoInicialOpcoes();
+
             // Após o splash, mostra o Login se o não estiver autenticado, ou a App se já tiver sessão
             // Verifica se o utilizador já tem ID (sessão ativa)
             if (localStorage.getItem("userId")) {
@@ -35,6 +39,21 @@ let graficoEvolucaoInstancia = null;
 // Variável para indicar se o utilizador não pretende ter conta 
 let isGuest = false;
 let sessaoTipos = { "Intervalo": [0, 0], "Escala": [0, 0], "Tonalidade": [0, 0] }; // Rastreio local
+
+// Função auxiliar para garantir a conformidade dos estados iniciais das checkboxes e contentores
+function configurarEstadoInicialOpcoes() {
+    const chkOcultarPauta = document.getElementById("chkOcultarPauta");
+    const chkOcultarMetricas = document.getElementById("chkOcultarMetricas");
+    const dashboardContent = document.getElementById("dashboard-content");
+
+    // 1. Notação Musical Visível por defeito (Treino auditivo desativado)
+    if (chkOcultarPauta) chkOcultarPauta.checked = false;          
+    if (divPauta) divPauta.style.display = "flex";                 
+
+    // 2. Painel Analítico Oculto por defeito (Métricas não visíveis no arranque)
+    if (chkOcultarMetricas) chkOcultarMetricas.checked = true;    
+    if (dashboardContent) dashboardContent.style.display = "none"; 
+}
 
 // AUTENTICAÇÃO
 // Função para gerir o login e o registo
@@ -75,6 +94,10 @@ async function gerirAutenticacao(rota) {
             if (appScreen) appScreen.style.display = "block";
             inputPass.value = "";
             if (msgBox) msgBox.innerText = "";
+            
+            // Garante o alinhamento das opções no login bem-sucedido
+            configurarEstadoInicialOpcoes();
+            
             // Atualiza o dashboard com os resultados do utilizador
             atualizarDashboard();
         }
@@ -82,6 +105,7 @@ async function gerirAutenticacao(rota) {
         if (msgBox) msgBox.innerText = "Erro de ligação ao servidor.";
     }
 }
+
 // Botão de Convidado - acesso sem conta e sem gravação de progresso
 const btnConvidado = document.getElementById("btnConvidado");
 if (btnConvidado) {
@@ -96,6 +120,9 @@ if (btnConvidado) {
         document.getElementById("bloco-historico").style.display = "none";
         document.getElementById("bloco-evolucao").style.display = "none";
         document.getElementById("bloco-tipos").style.width = "100%"; // Expande o gráfico de sessão
+
+        // Forçar estado limpo das checkboxes para o arranque da sessão convidada
+        configurarEstadoInicialOpcoes();
 
         // Reinicia contadores locais
         sessaoTotal = 0;
@@ -116,6 +143,7 @@ const btnRegistar = document.getElementById("btnRegistar");
 if (btnRegistar) {
     btnRegistar.addEventListener("click", () => gerirAutenticacao("registo"));
 }
+
 // Botão de Sair: Limpa a sessão e volta para o ecrã de login
 const btnSair = document.getElementById("btnSair");
 if (btnSair) {
@@ -125,14 +153,21 @@ if (btnSair) {
         const loginScreen = document.getElementById("login-screen");
         if (appScreen) appScreen.style.display = "none";
         if (loginScreen) loginScreen.style.display = "block";
+        
+        // Repõe interface e variáveis para o próximo utilizador
+        sessaoTotal = 0;
+        sessaoCertas = 0;
+        isGuest = false;
+        
+        const blocoHistorico = document.getElementById("bloco-historico");
+        const blocoEvolucao = document.getElementById("bloco-evolucao");
+        const blocoTipos = document.getElementById("bloco-tipos");
+        if (blocoHistorico) blocoHistorico.style.display = "flex";
+        if (blocoEvolucao) blocoEvolucao.style.display = "block";
+        if (blocoTipos) blocoTipos.style.width = "45%";
+
+        configurarEstadoInicialOpcoes();
     });
-    // Repõe interface para o próximo utilizador
-    sessaoTotal = 0;
-    sessaoCertas = 0;
-    isGuest = false;
-    document.getElementById("bloco-historico").style.display = "flex";
-    document.getElementById("bloco-evolucao").style.display = "block";
-    document.getElementById("bloco-tipos").style.width = "45%";
 }
 
 

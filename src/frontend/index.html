@@ -4,19 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Musical Theory Trainer</title>
+    <!-- Ícone vazio para suprimir o pedido automático do browser ao favicon.ico -->
     <link rel="icon" href="data:,">
-    <!-- Carrega o VexFlow versão 4.2.2 diretamente via CDN. -->
+    <!-- VexFlow 4.2.2 — notação musical em formato SVG -->
     <script src="https://cdn.jsdelivr.net/npm/vexflow@4.2.2/build/cjs/vexflow.js"></script>
-    <!-- Carrega o Tone.js versão 14.8.49 diretamente via CDN. -->
+    <!-- Tone.js 14.8.49 — Síntese de áudio no browser -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
-    <!-- Carrega o Chart.js versão 3.9.1 diretamente via CDN. -->
+    <!-- Chart.js — Geração dos gráficos do dashboard de métricas -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-    <!-- Splash Screen -->
+    <!-- SPLASH SCREEN: Ecrã de carregamento animado (2s) enquanto as bibliotecas JS ficam prontas -->
     <div id="splash-screen">
         <div class="splash-content">
             <h1 class="splash-title">🎵 Musical Theory Trainer</h1>
@@ -24,7 +24,8 @@
             <div class="spinner"></div>
         </div>
     </div>
-    <!-- Login Screen -->
+
+    <!-- ECRÃ DE AUTENTICAÇÃO: Visível após o splash se não houver sessão ativa -->
     <div id="login-screen" class="card" style="display: none;">
         <h2>Autenticação</h2>
         <p>Inicie sessão para guardar os seus resultados.</p>
@@ -32,34 +33,35 @@
             <input type="text" id="inputUser" placeholder="Nome de Utilizador" class="input-form">
             <input type="password" id="inputPass" placeholder="Password" class="input-form">
         </div>
+        <!-- Área de mensagens de erro/validação da autenticação -->
         <p id="login-msg" style="color: #f44336; font-size: 14px; min-height: 20px;"></p>
         <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 20px;">
             <button id="btnEntrar" class="btn-success">Entrar</button>
             <button id="btnRegistar" class="btn-primary">Criar Conta</button>
+            <!-- Modo convidado: acesso sem registo, sem persistência de resultados -->
             <button id="btnConvidado" style="background-color: #64748b; color: white;">Utilizar sem registo</button>
         </div>
     </div>
-    <!-- Ecrã Principal -->
+
+    <!-- ECRÃ PRINCIPAL: Visível após autenticação ou acesso como convidado -->
     <div id="app-screen" class="card" style="display: none;">
 
+        <!-- Cabeçalho com título e botão de sair -->
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <h2 style="margin: 0;">Musical Theory Trainer</h2>
             <button id="btnSair" class="btn-warning"
                 style="padding: 5px 10px; font-size: 12px; margin-left: 10px;">Sair</button>
         </div>
 
+        <!-- Mensagem dinâmica: indica o tipo de exercício ou o resultado da resposta -->
         <p id="status">A aguardar exercício...</p>
-        <!-- proprorciona ao utilziador opção de visualizar ou não a pauta-->
-        <div style="margin-bottom: 5px;">
-            <label for="chkOcultarPauta" style="font-size: 14px; color: #555; cursor: pointer;">
-                <input type="checkbox" id="chkOcultarPauta"> Ocultar notação musical (Modo Treino Auditivo)
-            </label>
-        </div>
-        <!-- desenhar a pauta recorrendo ao VexFlow -->
+
+        <!-- Área de renderização SVG da pauta musical (VexFlow) -->
         <div id="pauta"></div>
 
-        <!-- dropdown para escolher o tipo de exercício -->
+        <!-- Filtros de exercício e seletor de timbre -->
         <div style="margin-bottom: 15px; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+            <!-- Filtro: limita o tipo de exercício gerado -->
             <div>
                 <label for="filtroExercicio" style="font-size: 14px; color: #555;"><strong>Treinar:</strong></label>
                 <select id="filtroExercicio"
@@ -70,7 +72,7 @@
                     <option value="Tonalidade">Apenas Tonalidades</option>
                 </select>
             </div>
-            <!-- dropdown para escolha do instrumento -->
+            <!-- Seletor de timbre: altera o tipo de sintetizador usado pelo Tone.js -->
             <div>
                 <label for="seletorTimbre" style="font-size: 14px; color: #555;"><strong>Instrumento:</strong></label>
                 <select id="seletorTimbre"
@@ -85,27 +87,38 @@
                 </select>
             </div>
         </div>
-        <!-- botões para gerar exercício e tocar a resposta -->
+
+        <!-- Botões principais de interação -->
         <div class="botoes">
             <button id="btnGerar" class="btn-primary">🔄 Novo Exercício</button>
+            <!-- Botão Tocar desativado até existir um exercício gerado; ocultado nos exercícios de Tonalidade -->
             <button id="btnTocar" class="btn-success" disabled>▶ Tocar</button>
         </div>
-        <!-- botões para escolher a resposta -->
+
+        <!-- Botões de resposta gerados dinamicamente pelo app.js -->
         <div id="opcoes-resposta" class="botoes" style="margin-top: 15px;"></div>
-        <!-- área para mostrar a explicação teórica após resposta -->
+
+        <!-- Opções de personalização da experiência de treino -->
+        <div style="display: flex; gap: 20px; justify-content: center; margin-top: 25px; margin-bottom: 10px; flex-wrap: wrap; border-top: 1px dashed #ccc; padding-top: 15px;">
+            <!-- Oculta a pauta para treino exclusivamente auditivo -->
+            <label for="chkOcultarPauta" style="font-size: 14px; color: #555; cursor: pointer;">
+                <input type="checkbox" id="chkOcultarPauta"> Ocultar notação musical (Modo Treino Auditivo)
+            </label>
+            <!-- Oculta o dashboard -->
+            <label for="chkOcultarMetricas" style="font-size: 14px; color: #555; cursor: pointer;">
+                <input type="checkbox" id="chkOcultarMetricas"> Ocultar métricas de desempenho
+            </label>
+        </div>
+
+        <!-- Caixa de justificação pedagógica: visível apenas após resposta errada -->
         <div id="explicacao-teorica"
             style="display: none; margin-top: 15px; padding: 15px; background-color: #fdf0f0; border-left: 5px solid #f44336; text-align: left; font-size: 14px; color: #333; border-radius: 4px;">
         </div>
-        <!-- exibe métricas  -->
-        <div id="dashboard-area" style="margin-top: 30px; border-top: 2px solid #f1f5f9; padding-top: 20px;">
-            
-            <div style="margin-bottom: 15px; text-align: left; padding-left: 10px;">
-                <label for="chkOcultarMetricas" style="font-size: 14px; color: #555; cursor: pointer;">
-                    <input type="checkbox" id="chkOcultarMetricas"> Ocultar métricas de desempenho
-                </label>
-            </div>
 
+        <!-- DASHBOARD DE MÉTRICAS -->
+        <div id="dashboard-area" style="margin-top: 20px; border-top: 2px solid #f1f5f9; padding-top: 20px;">
             <div id="dashboard-content">
+                <!-- Indicadores numéricos: sessão atual e histórico global -->
                 <div style="display: flex; justify-content: space-around; margin-bottom: 20px;">
                     <div style="text-align: center;">
                         <span style="font-size: 12px; color: #64748b;">Sessão Atual</span><br>
@@ -116,21 +129,22 @@
                             <span style="font-size: 12px; color: #64748b;">Histórico Global</span><br>
                             <strong id="stat-global" style="font-size: 18px; color: #4CAF50;">0 / 0 (0%)</strong>
                         </div>
+                        <!-- Botão para apagar o histórico de tentativas do utilizador -->
                         <div style="display: flex; align-items: center;">
-                            <button id="btnReset" class="btn-warning" style="padding: 5px 10px; font-size: 12px;">Limpar
-                                Dados</button>
+                            <button id="btnReset" class="btn-warning" style="padding: 5px 10px; font-size: 12px;">Limpar Dados</button>
                         </div>
                     </div>
                 </div>
-
+                <!-- Gráficos Chart.js: desempenho por tipo de exercício e evolução temporal -->
                 <div style="display: flex; gap: 15px; justify-content: center; height: 180px; margin-top: 15px;">
                     <div id="bloco-tipos" style="width: 45%;"><canvas id="graficoTipos"></canvas></div>
                     <div id="bloco-evolucao" style="width: 45%;"><canvas id="graficoEvolucao"></canvas></div>
                 </div>
             </div>
-
         </div>
     </div>
+
+    <!-- Carrega o script principal da aplicação -->
     <script src="app.js"></script>
 </body>
 
