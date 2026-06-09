@@ -12,3 +12,6 @@ pydantic==2.11.3
  
 # ORM (Object-Relational Mapper) que permite utilizar classes Python para gerir e comunicar com a Base de Dados SQLite
 SQLAlchemy==2.0.40
+
+# Biblioteca para a execução de testes unitários automatizados
+pytest

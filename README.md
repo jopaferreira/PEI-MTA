@@ -33,6 +33,7 @@
 - [x] **Modo de Convidado** — Possibilidade de utilizar a aplicação sem registo, com dados isolados em memória RAM local.
 - [x] **Expansão do Motor Procedimental** — Inclusão dos Modos Gregos (Dórico, Frígio, Lídio, Mixolídio e Lócrio).
 - [x] **Treino Auditivo Avançado** — Funcionalidade de ocultar a pauta para focar apenas na audição, com possibilidade de seleção do timbre (Som Puro, Jogo Retro, Sopro, Corda, etc.).
+- [x] **Testes Unitários e Funcionais** — Bateria de testes automatizados (`pytest`) concluída com 100% de sucesso.
 
 ---
 
@@ -44,7 +45,7 @@ O núcleo do Produto Mínimo Viável (MVP) delineado na proposta inicial foi alc
 Não existem funcionalidades nucleares pendentes.
 O trabalho atual foca-se nas etapas finais do desenvolvimento:
 
-- [ ] **Testes Funcionais** — Realização de testes estruturados para validação do sistema e recolha de evidências (capturas de ecrã) para o Capítulo 4 do Relatório Final.
+- [x] **Testes Unitários e Funcionais** — Falta recolha de evidências visuais (capturas de ecrã) da interface para o Capítulo 4 do Relatório Final.
 - [ ] **Polimento (UI/UX)** — Pequenas afinações estéticas, de margens e responsividade para garantir a melhor experiência possível.
 
 **Funcionalidades transitadas para "Trabalho Futuro":**
@@ -89,6 +90,9 @@ pip install -r requirements.txt
 
 # Inicializar a Base de Dados (cria o ficheiro teoria_musical.db)
 python models.py
+
+# Executar a bateria de testes automatizados (Opcional)
+pytest test_music_logic.py -v -p no:cacheprovider
 ```
 
 **2. Arranque do Sistema Integrado**
