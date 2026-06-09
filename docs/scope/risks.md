@@ -19,6 +19,7 @@
 | R03 | **Complexidade do motor de geração procedimental:** Dificuldade na programação da lógica matemática que garante que um exercício musical gerado aleatoriamente respeita as regras da teoria musical convencional. | Média | Médio | Abordagem incremental: criar primeiro dicionários estáticos com dados validados de exercícios; só depois de o fluxo completo funcionar se substituirá por geração puramente processual/matemática. |
 | R04 | **Restrições de Autoplay nos Browsers:** O *browser* bloquear a reprodução automática de áudio (Tone.js) por políticas de segurança. | Alta | Médio | O desenho da interface obriga o utilizador a interagir fisicamente com a página (clique explícito no botão "Tocar") para iniciar o contexto de áudio (*AudioContext*), cumprindo as diretrizes dos navegadores modernos. |
 | R05 | **Sistemas de Ficheiros Efémeros na Nuvem:** Perda da base de dados SQLite (histórico) quando a plataforma de alojamento gratuito (Render) reinicia o contentor por inatividade. | Alta | Médio | Aceitação do risco para o MVP: a persistência relacional está funcional e demonstrável numa sessão contínua. Arquitetada a transição futura (alterando apenas a *string* do SQLAlchemy) para um serviço de base de dados PostgreSQL isolado e persistente. |
+| R06 | **Vulnerabilidades de Segurança:** A autenticação confia no `userId` do *localStorage* (permitindo manipulação de pedidos) e o *hashing* de passwords usa SHA-256 sem *salt*, sendo frágil a ataques de dicionário. | Alta | Alto | Risco assumido e aceite como limitação arquitetural para o âmbito restrito do MVP académico. Para uma evolução é prioritária a transição para `bcrypt` (com *salts*) e autenticação baseada em JWT (*JSON Web Tokens*) com validação *server-side*. |
 
 ---
 
@@ -29,3 +30,4 @@
 | 04/04/2026 | Todos | Criação da matriz inicial de riscos para a Entrega 1 | Em curso |
 | 23/05/2026 | R05 | Identificação de perda de dados no Render por inatividade (Contentor efémero). | Mitigado/Aceite |
 | 31/05/2026 | R02, R03 | Conclusão do MVP e testes funcionais confirmam a estabilidade do motor procedimental e a perfeita sincronia entre a pauta visual e o áudio gerado. | Resolvido |
+| 10/06/2026 | R06 | Identificação das falhas de IDOR e Hashing no modelo atual de gestão de utilizadores. | Mitigado/Aceite |

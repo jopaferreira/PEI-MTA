@@ -50,6 +50,8 @@ O trabalho atual foca-se nas etapas finais do desenvolvimento:
 
 **Funcionalidades transitadas para "Trabalho Futuro":**
 
+- [ ] **Reforço de Segurança Arquitetural:** Substituição do algoritmo de *hashing* (de SHA-256 direto para `bcrypt` com *salt*) e implementação de um sistema robusto de sessões (ex: JWT em *cookies* `HttpOnly`) para mitigar vulnerabilidades de *Insecure Direct Object Reference* (IDOR) detetadas no MVP.
+
 ---
 
 ## Como instalar e correr
