@@ -2,9 +2,10 @@
 
 import random
 
-# Constantes para as Tonalidades (Ciclo das Quintas)
+# Constantes para as Tonalidades -Ciclo das Quintas
 ORDEM_SUSTENIDOS = ['F', 'C', 'G', 'D', 'A', 'E', 'B']
 ORDEM_BEMOIS = ['B', 'E', 'A', 'D', 'G', 'C', 'F']
+
 # Atribuição do número de acidentes para cada tonalidade 
 TONALIDADES_MAIORES = {
     -7: 'Cb Maior', -6: 'Gb Maior', -5: 'Db Maior', -4: 'Ab Maior', -3: 'Eb Maior', -2: 'Bb Maior', -1: 'F Maior',
@@ -18,8 +19,7 @@ TONALIDADES_MENORES = {
      1: 'E Menor',   2: 'B Menor',   3: 'F# Menor',  4: 'C# Menor',  5: 'G# Menor',  6: 'D# Menor',  7: 'A# Menor'
 }
 
-# O Dicionário de meios tons
-# Atribui a posição do som para a nota correta
+# O Dicionário de meios tons - Atribui a posição do som para a nota correta
 DICIONARIO_ORTOGRAFICO = {
     0: {'c': {"vexflow": "c/4", "tone": "C4"}, 'b': {"vexflow": "b#/3", "tone": "B#3"}},
     1: {'c': {"vexflow": "c#/4", "tone": "C#4"}, 'd': {"vexflow": "db/4", "tone": "Db4"}},
@@ -57,7 +57,11 @@ NOTAS_BASE_DISPONIVEIS = [
     {"som": 9, "letra": 5}  # Lá
 ]
 
-# Função para obter a nota correta a partir do dicionário, usando o indice do som e o indice da letra
+def formatar_nome_nota(nota_dict):
+    """Auxiliar para remover a oitava (ex: C4 -> C, A#5 -> A#) e facilitar a leitura pedagógica."""
+    return nota_dict["tone"].replace("3", "").replace("4", "").replace("5", "")
+
+# Função para obter a nota correta a partir do dicionário
 def obter_nota_ortografica(indice_absoluto, indice_letra):
     letra_desejada = SEQUENCIA_LETRAS[indice_letra % 7]
     opcoes_som = DICIONARIO_ORTOGRAFICO.get(indice_absoluto, {})
@@ -81,20 +85,27 @@ def gerar_intervalo_aleatorio():
         "7ª Menor": (10, 6), "7ª Maior": (11, 6),
         "Oitava": (12, 7)
     }
-    # Sorteia um intervalo e obtém os meios tons e saltos nas letras correspondentes
+    
     nome_intervalo, regras = random.choice(list(tipos_intervalos.items()))
-    meios_tons, saltos_letra = regras
-    # Calcula as notas base e alvo usando o dicionário ortográfico
+    meios_tons, saltos_letra = rules = regras
+    
     nota_base = obter_nota_ortografica(base["som"], base["letra"])
     nota_alvo = obter_nota_ortografica(base["som"] + meios_tons, base["letra"] + saltos_letra)
-    # Gera opções de resposta (distratores) e baralha a ordem
+    
     todas_chaves = list(tipos_intervalos.keys())
     todas_chaves.remove(nome_intervalo)
     opcoes_resposta = random.sample(todas_chaves, 3) + [nome_intervalo]
     random.shuffle(opcoes_resposta)
     
-    # Justificação Pedagógica
-    explicacao = f"Uma {nome_intervalo} corresponde a uma distância exata de {meios_tons} meios-tons."
+    # JUSTIFICAÇÃO PEDAGÓGICA MELHORADA: Explica a distância por graus e por meios-tons com as notas do exercício
+    n_base = formatar_nome_nota(nota_base)
+    n_alvo = formatar_nome_nota(nota_alvo)
+    graus_distancia = saltos_letra + 1
+    explicacao = (
+        f"A distância entre <strong>{n_base}</strong> e <strong>{n_alvo}</strong> é uma <strong>{nome_intervalo}</strong>. "
+        f"Verifica que abrange exatamente <strong>{graus_distancia} graus</strong> na pauta (letras consecutivas no alfabeto musical) "
+        f"e uma separação acústica de <strong>{meios_tons} meio(s)-tom(ns)</strong>."
+    )
     
     return {
         "tipo_exercicio": "Intervalo", "detalhe": nome_intervalo,
@@ -106,7 +117,6 @@ def gerar_intervalo_aleatorio():
 def gerar_escala_aleatoria():
     base = random.choice(NOTAS_BASE_DISPONIVEIS)
     
-    # Padrões de meios-tons a partir da tónica
     tipos_escalas = {
         "Escala Maior (Jónio)": [0, 2, 4, 5, 7, 9, 11, 12],
         "Escala Menor Natural (Eólio)": [0, 2, 3, 5, 7, 8, 10, 12],
@@ -118,45 +128,48 @@ def gerar_escala_aleatoria():
         "Modo Lócrio": [0, 1, 3, 4, 6, 8, 10, 12]
     }
     
-    # Sorteia uma escala, obtém o nome e o padrão correspondente
     nome_escala_correta, padrao_meios_tons = random.choice(list(tipos_escalas.items()))
     
     notas_escala = []
     for salto_alfabeto, meios_tons in enumerate(padrao_meios_tons):
-        # Avança o som e avança a letra do alfabeto ao longo da escala
         nota = obter_nota_ortografica(base["som"] + meios_tons, base["letra"] + salto_alfabeto)
         notas_escala.append(nota)
         
-    # Gera opções de resposta: A certa + 3 distratores aleatórios 
     todas_escalas = list(tipos_escalas.keys())
     todas_escalas.remove(nome_escala_correta)
     opcoes_resposta = random.sample(todas_escalas, 3) + [nome_escala_correta]
     random.shuffle(opcoes_resposta)
     
-    # Justificação Pedagógica alargada
-    explicacoes_teoricas = {
-        "Escala Maior (Jónio)": "O modo Jónio (Escala Maior) tem meios-tons entre o 3º/4º e 7º/8º graus.",
-        "Escala Menor Natural (Eólio)": "O modo Eólio (Menor Natural) tem meios-tons entre o 2º/3º e 5º/6º graus.",
-        "Escala Menor Harmónica": "A Menor Harmónica eleva o 7º grau da escala menor natural num meio-tom para criar a sensível.",
-        "Modo Dórico": "O modo Dórico é uma escala menor com a 6ª maior (meios-tons: 2º/3º e 6º/7º).",
-        "Modo Frígio": "O modo Frígio é uma escala menor caracterizada pela sua 2ª menor (meios-tons: 1º/2º e 5º/6º).",
-        "Modo Lídio": "O modo Lídio é uma escala maior caracterizada pela sua 4ª aumentada (meios-tons: 4º/5º e 7º/8º).",
-        "Modo Mixolídio": "O modo Mixolídio é uma escala maior com a 7ª menor (meios-tons: 3º/4º e 6º/7º).",
-        "Modo Lócrio": "O modo Lócrio é o único modo com uma 5ª diminuta (meios-tons: 1º/2º e 4º/5º)."
-    }
+    # Extrai o vetor de notas limpas para a construção da justificação contextualizada
+    n = [formatar_nome_nota(nt) for nt in notas_escala]
     
+    # JUSTIFICAÇÃO PEDAGÓGICA MELHORADA: Localiza com precisão os meios-tons na escala específica gerada
+    if nome_escala_correta == "Escala Maior (Jónio)":
+        explicacao = f"Na <strong>{nome_escala_correta} de {n[0]}</strong>, os meios-tons estão localizados estritamente entre o 3º/4º graus (<strong>{n[2]}-{n[3]}</strong>) e o 7º/8º graus (<strong>{n[6]}-{n[7]}</strong>)."
+    elif nome_escala_correta == "Escala Menor Natural (Eólio)":
+        explicacao = f"Na <strong>{nome_escala_correta} de {n[0]}</strong>, os meios-tons estão localizados estritamente entre o 2º/3º graus (<strong>{n[1]}-{n[2]}</strong>) e o 5º/6º graus (<strong>{n[4]}-{n[5]}</strong>)."
+    elif nome_escala_correta == "Escala Menor Harmónica":
+        explicacao = f"Na <strong>{nome_escala_correta} de {n[0]}</strong>, encontras meios-tons entre o 2º/3º graus (<strong>{n[1]}-{n[2]}</strong>), 5º/6º graus (<strong>{n[4]}-{n[5]}</strong>) e 7º/8º graus (<strong>{n[6]}-{n[7]}</strong>), além do característico intervalo de 2ª Aumentada (3 meios-tons) entre o 6º e 7º graus (<strong>{n[5]}-{n[6]}</strong>)."
+    elif nome_escala_correta == "Modo Dórico":
+        explicacao = f"No <strong>{nome_escala_correta} de {n[0]}</strong> (escala menor com 6ª Maior), os meios-tons situam-se entre o 2º/3º graus (<strong>{n[1]}-{n[2]}</strong>) e o 6º/7º graus (<strong>{n[5]}-{n[6]}</strong>)."
+    elif nome_escala_correta == "Modo Frígio":
+        explicacao = f"No <strong>{nome_escala_correta} de {n[0]}</strong> (escala menor com a sua marcante 2ª Menor), os meios-tons encontram-se imediatamente entre o 1º/2º graus (<strong>{n[0]}-{n[1]}</strong>) e o 5º/6º graus (<strong>{n[4]}-{n[5]}</strong>)."
+    elif nome_escala_correta == "Modo Lídio":
+        explicacao = f"No <strong>{nome_escala_correta} de {n[0]}</strong> (escala maior com 4ª Aumentada), os meios-tons localizam-se entre o 4º/5º graus (<strong>{n[3]}-{n[4]}</strong>) e o 7º/8º graus (<strong>{n[6]}-{n[7]}</strong>)."
+    elif nome_escala_correta == "Modo Mixolídio":
+        explicacao = f"No <strong>{nome_escala_correta} de {n[0]}</strong> (escala maior com 7ª Menor dominante), os meios-tons encontram-se entre o 3º/4º graus (<strong>{n[2]}-{n[3]}</strong>) e o 6º/7º graus (<strong>{n[5]}-{n[6]}</strong>)."
+    else:  # Modo Lócrio
+        explicacao = f"No <strong>{nome_escala_correta} de {n[0]}</strong> (modo diminuto com 5ª Diminuta), os meios-tons ocorrem entre o 1º/2º graus (<strong>{n[0]}-{n[1]}</strong>) e o 4º/5º graus (<strong>{n[3]}-{n[4]}</strong>)."
+        
     return {
         "tipo_exercicio": "Escala", "detalhe": nome_escala_correta,
         "notas": notas_escala, "opcoes": opcoes_resposta,
-        "explicacao": explicacoes_teoricas[nome_escala_correta]
+        "explicacao": explicacao
     }
 
 # Função para gerar um exercício de identificação de tonalidade por armação de clave
 def gerar_exercicio_tonalidade():
-    # Sorteia uma armação de clave (entre 7 bemóis e 7 sustenidos)
     num_acidentes = random.randint(-7, 7)
-    
-    # Sorteia a tonalidade: Maior ou Menor
     tipo_pergunta = random.choice(['Maior', 'Menor'])
     
     if tipo_pergunta == 'Maior':
@@ -166,29 +179,32 @@ def gerar_exercicio_tonalidade():
         resposta_certa = TONALIDADES_MENORES[num_acidentes]
         dicionario_opcoes = TONALIDADES_MENORES
 
-    # Determina os acidentes da armação de clave para desenho pelo VexFlow
     acidentes_ativos = []
     if num_acidentes > 0:
         acidentes_ativos = [f"{nota}#" for nota in ORDEM_SUSTENIDOS[:num_acidentes]]
     elif num_acidentes < 0:
         acidentes_ativos = [f"{nota}b" for nota in ORDEM_BEMOIS[:abs(num_acidentes)]]
 
-    # Gera opções erradas aleatórias - excluindo a resposta certa
     chaves_erradas = random.sample([k for k in dicionario_opcoes.keys() if k != num_acidentes], 3)
     opcoes = [resposta_certa] + [dicionario_opcoes[k] for k in chaves_erradas]
-    # Baralha a ordem dos botões
     random.shuffle(opcoes) 
 
-    # Justificação Pedagógica
-    texto_acidentes = "nenhum acidente (Dó Maior / Lá Menor)"
-    if num_acidentes > 0:
-        texto_acidentes = f"{num_acidentes} sustenido(s)"
-    elif num_acidentes < 0:
-        texto_acidentes = f"{abs(num_acidentes)} bemol/bemóis"
+    # JUSTIFICAÇÃO PEDAGÓGICA MELHORADA: Mapeia explicitamente os acidentes visuais com o par de tonalidades relativas
+    if num_acidentes == 0:
+        texto_acidentes = "<strong>nenhum acidente</strong>"
+    elif num_acidentes > 0:
+        lista_acid = ", ".join(acidentes_ativos)
+        texto_acidentes = f"<strong>{num_acidentes} sustenido(s)</strong> ({lista_acid})"
+    else:
+        lista_acid = ", ".join(acidentes_ativos)
+        texto_acidentes = f"<strong>{abs(num_acidentes)} bemol/bemóis</strong> ({lista_acid})"
         
-    explicacao = f"De acordo com o Ciclo das Quintas, a tonalidade de {resposta_certa} possui exatamente {texto_acidentes} na armação de clave."
-    # Devolve as informações do exercício para o frontend:
-    # tipo de exercício, resposta correta, opções de resposta, acidentes e explicação pedagógica
+    explicacao = (
+        f"A armação de clave apresentada contém exatamente {texto_acidentes}. "
+        f"No Ciclo das Quintas, esta configuração exata define a assinatura de duas tonalidades relativas: "
+        f"<strong>{TONALIDADES_MAIORES[num_acidentes]}</strong> (eixo Maior) ou <strong>{TONALIDADES_MENORES[num_acidentes]}</strong> (eixo Menor)."
+    )
+    
     return {
         "tipo_exercicio": "Tonalidade",
         "detalhe": resposta_certa, 
@@ -199,3 +215,4 @@ def gerar_exercicio_tonalidade():
         "mensagem": f"Qual é a Tonalidade {tipo_pergunta} com esta armação de clave?",
         "explicacao": explicacao
     }
+    
