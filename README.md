@@ -52,6 +52,7 @@ O trabalho atual foca-se nas etapas finais do desenvolvimento:
 
 - [ ] **Reforço de Segurança Arquitetural:** Substituição do algoritmo de *hashing* (de SHA-256 direto para `bcrypt` com *salt*) e implementação de um sistema robusto de sessões (ex: JWT em *cookies* `HttpOnly`) para mitigar vulnerabilidades de *Insecure Direct Object Reference* (IDOR) detetadas no MVP.
 - [ ] **Modo de Exame:** Alteração da arquitetura da API para não enviar as soluções no JSON. A implementação deste modo guardaria o estado do exercício temporariamente no servidor, forçando a validação e correção do lado do *Backend*, impedindo qualquer tipo de fraude por inspeção de código no *browser*.
+- [ ] **Generalização do Motor Cromático Expandido:** Expansão do algoritmo de geração procedimental das 5 notas base atuais para a totalidade dos 12 tons cromáticos, parametrizando regras de ortografia diatónica para suportar tonalidades e escalas complexas com acidentes duplos (dobrados sustenidos e dobrados bemóis).
 
 ---
 
@@ -144,4 +145,4 @@ uvicorn main:app --reload
 
 ---
 
-*Última actualização: 7 de junho de 2026 · Sem. 13*
+*Última actualização: 11 de junho de 2026 · Sem. 14*
