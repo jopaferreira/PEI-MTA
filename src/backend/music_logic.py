@@ -1,8 +1,8 @@
-# Motor - Geração musical procedimental com Ortografia Diatónica
+# Motor - Geração musical procedimental com Ortografia Diatónica e Distratores Inteligentes
 
 import random
 
-# Constantes para as Tonalidades -Ciclo das Quintas
+# Constantes para as Tonalidades - Ciclo das Quintas
 ORDEM_SUSTENIDOS = ['F', 'C', 'G', 'D', 'A', 'E', 'B']
 ORDEM_BEMOIS = ['B', 'E', 'A', 'D', 'G', 'C', 'F']
 
@@ -58,7 +58,7 @@ NOTAS_BASE_DISPONIVEIS = [
 ]
 
 def formatar_nome_nota(nota_dict):
-    """Auxiliar para remover a oitava (ex: C4 -> C, A#5 -> A#) e facilitar a leitura pedagógica."""
+    # Auxiliar para remover a oitava (ex: C4 -> C, A#5 -> A#)
     return nota_dict["tone"].replace("3", "").replace("4", "").replace("5", "")
 
 # Função para obter a nota correta a partir do dicionário
@@ -75,7 +75,6 @@ def obter_nota_ortografica(indice_absoluto, indice_letra):
 def gerar_intervalo_aleatorio():
     base = random.choice(NOTAS_BASE_DISPONIVEIS)
     
-    # Atribui a soma de meios tons e a quantidade de saltos de letra para cada tipo de intervalo
     tipos_intervalos = {
         "2ª Menor": (1, 1), "2ª Maior": (2, 1),
         "3ª Menor": (3, 2), "3ª Maior": (4, 2),
@@ -86,18 +85,32 @@ def gerar_intervalo_aleatorio():
         "Oitava": (12, 7)
     }
     
+    # Distratores inteligentes para intervalos (Maior vs Menor, Perfeita vs Aumentada)
+    distratores_diagnosticos = {
+        "2ª Menor": ["2ª Maior", "3ª Menor", "4ª Perfeita"],
+        "2ª Maior": ["2ª Menor", "3ª Menor", "3ª Maior"],
+        "3ª Menor": ["3ª Maior", "2ª Maior", "4ª Perfeita"],
+        "3ª Maior": ["3ª Menor", "4ª Perfeita", "4ª Aumentada"],
+        "4ª Perfeita": ["4ª Aumentada", "5ª Perfeita", "3ª Maior"],
+        "4ª Aumentada": ["4ª Perfeita", "5ª Perfeita", "6ª Menor"],
+        "5ª Perfeita": ["4ª Aumentada", "6ª Menor", "6ª Maior"],
+        "6ª Menor": ["6ª Maior", "5ª Perfeita", "7ª Menor"],
+        "6ª Maior": ["6ª Menor", "7ª Menor", "5ª Perfeita"],
+        "7ª Menor": ["7ª Maior", "6ª Maior", "Oitava"],
+        "7ª Maior": ["7ª Menor", "Oitava", "6ª Maior"],
+        "Oitava": ["7ª Maior", "7ª Menor", "5ª Perfeita"]
+    }
+    
     nome_intervalo, regras = random.choice(list(tipos_intervalos.items()))
-    meios_tons, saltos_letra = rules = regras
+    meios_tons, saltos_letra = regras
     
     nota_base = obter_nota_ortografica(base["som"], base["letra"])
     nota_alvo = obter_nota_ortografica(base["som"] + meios_tons, base["letra"] + saltos_letra)
     
-    todas_chaves = list(tipos_intervalos.keys())
-    todas_chaves.remove(nome_intervalo)
-    opcoes_resposta = random.sample(todas_chaves, 3) + [nome_intervalo]
+    # Injeção dos distratores
+    opcoes_resposta = distratores_diagnosticos[nome_intervalo] + [nome_intervalo]
     random.shuffle(opcoes_resposta)
     
-    # JUSTIFICAÇÃO PEDAGÓGICA MELHORADA: Explica a distância por graus e por meios-tons com as notas do exercício
     n_base = formatar_nome_nota(nota_base)
     n_alvo = formatar_nome_nota(nota_alvo)
     graus_distancia = saltos_letra + 1
@@ -128,6 +141,18 @@ def gerar_escala_aleatoria():
         "Modo Lócrio": [0, 1, 3, 4, 6, 8, 10, 12]
     }
     
+    # Distratores inteligentes para escalas (Agrupamento por familiaridade de modos)
+    distratores_diagnosticos = {
+        "Escala Maior (Jónio)": ["Modo Lídio", "Modo Mixolídio", "Escala Menor Natural (Eólio)"],
+        "Escala Menor Natural (Eólio)": ["Modo Dórico", "Escala Menor Harmónica", "Modo Frígio"],
+        "Escala Menor Harmónica": ["Escala Menor Natural (Eólio)", "Modo Dórico", "Modo Frígio"],
+        "Modo Dórico": ["Escala Menor Natural (Eólio)", "Modo Frígio", "Modo Mixolídio"],
+        "Modo Frígio": ["Escala Menor Natural (Eólio)", "Modo Dórico", "Modo Lócrio"],
+        "Modo Lídio": ["Escala Maior (Jónio)", "Modo Mixolídio", "Modo Frígio"],
+        "Modo Mixolídio": ["Escala Maior (Jónio)", "Modo Dórico", "Modo Lídio"],
+        "Modo Lócrio": ["Modo Frígio", "Escala Menor Natural (Eólio)", "Modo Dórico"]
+    }
+    
     nome_escala_correta, padrao_meios_tons = random.choice(list(tipos_escalas.items()))
     
     notas_escala = []
@@ -135,15 +160,11 @@ def gerar_escala_aleatoria():
         nota = obter_nota_ortografica(base["som"] + meios_tons, base["letra"] + salto_alfabeto)
         notas_escala.append(nota)
         
-    todas_escalas = list(tipos_escalas.keys())
-    todas_escalas.remove(nome_escala_correta)
-    opcoes_resposta = random.sample(todas_escalas, 3) + [nome_escala_correta]
+    opcoes_resposta = distratores_diagnosticos[nome_escala_correta] + [nome_escala_correta]
     random.shuffle(opcoes_resposta)
     
-    # Extrai o vetor de notas limpas para a construção da justificação contextualizada
     n = [formatar_nome_nota(nt) for nt in notas_escala]
     
-    # JUSTIFICAÇÃO PEDAGÓGICA MELHORADA: Localiza com precisão os meios-tons na escala específica gerada
     if nome_escala_correta == "Escala Maior (Jónio)":
         explicacao = f"Na <strong>{nome_escala_correta} de {n[0]}</strong>, os meios-tons estão localizados estritamente entre o 3º/4º graus (<strong>{n[2]}-{n[3]}</strong>) e o 7º/8º graus (<strong>{n[6]}-{n[7]}</strong>)."
     elif nome_escala_correta == "Escala Menor Natural (Eólio)":
@@ -174,10 +195,8 @@ def gerar_exercicio_tonalidade():
     
     if tipo_pergunta == 'Maior':
         resposta_certa = TONALIDADES_MAIORES[num_acidentes]
-        dicionario_opcoes = TONALIDADES_MAIORES
     else:
         resposta_certa = TONALIDADES_MENORES[num_acidentes]
-        dicionario_opcoes = TONALIDADES_MENORES
 
     acidentes_ativos = []
     if num_acidentes > 0:
@@ -185,11 +204,44 @@ def gerar_exercicio_tonalidade():
     elif num_acidentes < 0:
         acidentes_ativos = [f"{nota}b" for nota in ORDEM_BEMOIS[:abs(num_acidentes)]]
 
-    chaves_erradas = random.sample([k for k in dicionario_opcoes.keys() if k != num_acidentes], 3)
-    opcoes = [resposta_certa] + [dicionario_opcoes[k] for k in chaves_erradas]
-    random.shuffle(opcoes) 
+    # Distratores inteligentes para tonalidades (Erros comuns em Tonalidades)
+    opcoes = [resposta_certa]
+    
+    # Distrator: Tonalidade Relativa (Mesma armação, modo oposto)
+    if tipo_pergunta == 'Maior':
+        opcoes.append(TONALIDADES_MENORES[num_acidentes])
+    else:
+        opcoes.append(TONALIDADES_MAIORES[num_acidentes])
+        
+    # Distrator: Erro de acidente (Ex: Confundir 2 sustenidos com 2 bemóis)
+    if tipo_pergunta == 'Maior':
+        opcoes.append(TONALIDADES_MAIORES[-num_acidentes])
+    else:
+        opcoes.append(TONALIDADES_MENORES[-num_acidentes])
+        
+    # Distrator: Erro de contagem de acidentes(Adicionar/subtrair 1 acidente)
+    vizinho = num_acidentes + 1 if num_acidentes < 7 else num_acidentes - 1
+    if num_acidentes == 0: 
+        vizinho = random.choice([-1, 1])
+        
+    if tipo_pergunta == 'Maior':
+        opcoes.append(TONALIDADES_MAIORES[vizinho])
+    else:
+        opcoes.append(TONALIDADES_MENORES[vizinho])
 
-    # JUSTIFICAÇÃO PEDAGÓGICA MELHORADA: Mapeia explicitamente os acidentes visuais com o par de tonalidades relativas
+    # Remove duplicados (ex: num_acidentes = 0 faz com que o oposto também seja 0)
+    opcoes_unicas = list(set(opcoes))
+    
+    # Preenche com opções aleatórias mistas se faltarem devido a duplicados (Dó Maior / Lá Menor)
+    while len(opcoes_unicas) < 4:
+        aleatorio = random.choice(list(TONALIDADES_MAIORES.values()) + list(TONALIDADES_MENORES.values()))
+        if aleatorio not in opcoes_unicas:
+            opcoes_unicas.append(aleatorio)
+            
+    # Assegura que devolve apenas 4 e baralha
+    opcoes_finais = opcoes_unicas[:4]
+    random.shuffle(opcoes_finais)
+
     if num_acidentes == 0:
         texto_acidentes = "<strong>nenhum acidente</strong>"
     elif num_acidentes > 0:
@@ -209,10 +261,9 @@ def gerar_exercicio_tonalidade():
         "tipo_exercicio": "Tonalidade",
         "detalhe": resposta_certa, 
         "notas": [], 
-        "opcoes": opcoes,
+        "opcoes": opcoes_finais,
         "num_acidentes": num_acidentes,
         "acidentes_ativos": acidentes_ativos,
         "mensagem": f"Qual é a Tonalidade {tipo_pergunta} com esta armação de clave?",
         "explicacao": explicacao
     }
-    
