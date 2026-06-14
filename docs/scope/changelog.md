@@ -112,9 +112,9 @@
 
 ## Sem. 14 · 9–13 jun
 
-**Feito:**  
-**Bloqueou:**  
-**Próxima semana:**
+**Feito:** Implementação de testes unitários automatizados (`pytest`) com 100% de sucesso. Introdução de distratores inteligentes (mapeamento de erros comuns) e justificações pedagógicas dinâmicas. Implementação de um Recomendador Pedagógico no Dashboard. 
+**Bloqueou:** Nada.
+**Próxima semana:** Recolha de evidências visuais dos testes funcionais (capturas de ecrã) e estruturação e redação do Capítulo 4 do Relatório Final.
 
 ---
 
