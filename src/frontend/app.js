@@ -349,6 +349,10 @@ async function atualizarDashboard() {
             },
             options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } }, plugins: { title: { display: true, text: 'Desempenho por Tópico (Sessão)' }, legend: { display: false } } }
         });
+        
+        // Recomendações pedagógicas - Para utilizadores sem registo
+        atualizarRecomendadorPedagogico(dadosLocais);
+        
         return;
     }
 
@@ -427,6 +431,9 @@ async function atualizarDashboard() {
                 }
             }
         });
+
+        // Recomendações pedagógicas - Para utilizadores registados
+        atualizarRecomendadorPedagogico(dados.por_tipo);
 
     } catch (e) {
         console.error("Erro ao carregar métricas analíticas.");
@@ -557,4 +564,37 @@ if (chkOcultarMetricas && dashboardContent) {
         // Alterna entre ocultar e mostrar as métricas
         dashboardContent.style.display = e.target.checked ? "none" : "block";
     });
+}
+
+// Função para gerar a sugestões de estudo com base na área mais fraca
+function atualizarRecomendadorPedagogico(dadosTipos) {
+    const painel = document.getElementById("painel-recomendacao");
+    const texto = document.getElementById("texto-recomendacao");
+    if (!painel || !texto) return;
+
+    const topicos = Object.keys(dadosTipos);
+    if (topicos.length > 0) {
+        let piorTopico = topicos[0];
+        let piorTaxa = parseFloat(dadosTipos[piorTopico]);
+
+        // Encontra o tópico com a percentagem de acerto mais baixa
+        for (const topico of topicos) {
+            const taxaAtual = parseFloat(dadosTipos[topico]);
+            if (taxaAtual < piorTaxa) {
+                piorTaxa = taxaAtual;
+                piorTopico = topico;
+            }
+        }
+
+        painel.style.display = "block";
+        
+        // Regras de diagnóstico pedagógico
+        if (piorTaxa >= 80) {
+            texto.innerHTML = `Excelente desempenho geral! Continue a treinar no modo <strong>Mistura</strong> para manter a fluidez de raciocínio visual e auditivo.`;
+        } else {
+            texto.innerHTML = `A sua taxa de acerto em <strong>${piorTopico}</strong> é a mais baixa (${piorTaxa.toFixed(1)}%). Sugerimos que altere o filtro "Treinar" apenas para ${piorTopico} nas próximas tentativas.`;
+        }
+    } else {
+        painel.style.display = "none";
+    }
 }

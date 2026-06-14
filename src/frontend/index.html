@@ -99,7 +99,8 @@
         <div id="opcoes-resposta" class="botoes" style="margin-top: 15px;"></div>
 
         <!-- Opções de personalização da experiência de treino -->
-        <div style="display: flex; gap: 20px; justify-content: center; margin-top: 25px; margin-bottom: 10px; flex-wrap: wrap; border-top: 1px dashed #ccc; padding-top: 15px;">
+        <div
+            style="display: flex; gap: 20px; justify-content: center; margin-top: 25px; margin-bottom: 10px; flex-wrap: wrap; border-top: 1px dashed #ccc; padding-top: 15px;">
             <!-- Oculta a pauta para treino exclusivamente auditivo -->
             <label for="chkOcultarPauta" style="font-size: 14px; color: #555; cursor: pointer;">
                 <input type="checkbox" id="chkOcultarPauta"> Ocultar notação musical (Modo Treino Auditivo)
@@ -131,9 +132,16 @@
                         </div>
                         <!-- Botão para apagar o histórico de tentativas do utilizador -->
                         <div style="display: flex; align-items: center;">
-                            <button id="btnReset" class="btn-warning" style="padding: 5px 10px; font-size: 12px;">Limpar Dados</button>
+                            <button id="btnReset" class="btn-warning" style="padding: 5px 10px; font-size: 12px;">Limpar
+                                Dados</button>
                         </div>
                     </div>
+                </div>
+                <!-- Recomendações pedagógicas -->
+                <div id="painel-recomendacao"
+                    style="display: none; background-color: #e0f2fe; border-left: 4px solid #0ea5e9; padding: 12px; margin-bottom: 20px; border-radius: 4px; text-align: left; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <strong style="color: #0369a1; font-size: 14px;">💡 Sugestão de Estudo:</strong>
+                    <span id="texto-recomendacao" style="font-size: 14px; color: #334155; margin-left: 5px;"></span>
                 </div>
                 <!-- Gráficos Chart.js: desempenho por tipo de exercício e evolução temporal -->
                 <div style="display: flex; gap: 15px; justify-content: center; height: 180px; margin-top: 15px;">
