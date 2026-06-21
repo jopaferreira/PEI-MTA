@@ -23,7 +23,7 @@ Decidi usar **SQLite** gerido através do ORM **SQLAlchemy**.
 | Alternativa | Razão de rejeição |
 |------------|------------------|
 | PostgreSQL / MySQL | Exigem a instalação de software adicional no sistema operativo ou a configuração de contentores Docker, o que adiciona complexidade desnecessária de infraestrutura para a fase de MVP. |
-| Ficheiros JSON estáticos | Não oferecem segurança nem escalabilidade mínima, dificultando a implementação futura de autenticação ou queries mais complexas. |
+| Ficheiros JSON estáticos | Não oferecem segurança nem integridade relacional, o que inviabilizaria a segregação segura de dados necessária para o novo sistema de perfis e autenticação. |
 
 ---
 

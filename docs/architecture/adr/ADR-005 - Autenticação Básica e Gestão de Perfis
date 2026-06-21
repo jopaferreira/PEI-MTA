@@ -1,0 +1,43 @@
+# ADR-005 — Mecanismo de Autenticação Básica e Gestão de Perfis
+
+**Data:** 12 de maio de 2026
+**Estado:** Aceite
+**Decisores:** João Paulo Ramos Ferreira
+
+---
+
+## Contexto
+
+Com a promoção do requisito funcional de gestão de perfis (RF10) de *Should-Have* para *Must-Have*, o sistema passou a exigir um mecanismo para identificar utilizadores de forma individual, cifrar as suas credenciais e isolar o histórico de tentativas de cada estudante na base de dados. Sendo um MVP desenvolvido num ambiente académico individual, a solução precisava de ser leve e independente de infraestruturas externas complexas.
+
+---
+
+## Decisão
+
+Decidi implementar um sistema de autenticação básico assente em duas componentes:
+1. **No Backend (Python):** Cifra unidirecional da palavra-passe em formato de resumo alfanumérico utilizando o algoritmo SHA-256 (através da biblioteca nativa `hashlib`), sem aplicação de *salts*.
+2. **No Frontend (JavaScript):** Armazenamento do identificador numérico do utilizador (`userId`) diretamente no `localStorage` do *browser* para controlo da persistência da sessão ativa.
+
+Foi também mantido um "Modo Convidado" que limpa este estado e ignora as rotas de gravação na base de dados.
+
+---
+
+## Alternativas consideradas
+
+| Alternativa | Razão de rejeição |
+|------------|------------------|
+| **Tokens JWT (JSON Web Tokens) e Bcrypt** | Opção padrão para ambientes comerciais distribuídos. Foi rejeitada para o MVP devido ao tempo limitado de desenvolvimento e à complexidade acrescida de configurar *middlewares* de verificação de tokens e gestão de expiração no FastAPI. |
+| **Sessões em Memória no Servidor** | Rejeitado porque quebraria a natureza *stateless* (amnésica) da API REST, limitando a escalabilidade horizontal do servidor backend. |
+
+---
+
+## Consequências
+
+**Positivas:**
+- **Simplicidade de Implementação:** Código enxuto no `main.py` e manipulação direta no `app.js`, sem dependências de bibliotecas de terceiros complexas.
+- **Isolamento de Dados:** Permite que o *Dashboard* e o gráfico de evolução do utilizador carreguem dados estritamente associados ao perfil autenticado.
+- **Compatibilidade com o SQLite:** Alinhamento perfeito com a arquitetura relacional leve adotada.
+
+**Negativas / trade-offs (Limitações Assumidas):**
+- **Vulnerabilidade a Ataques Criptográficos:** O armazenamento de *hashes* SHA-256 diretos, sem *salt*, torna o sistema vulnerável a ataques de dicionário caso o ficheiro `teoria_musical.db` seja comprometido.
+- **Segurança Frágil no Cliente:** O sistema confia no `userId` transmitido pelo cliente no corpo das mensagens JSON. Um utilizador avançado pode manipular o valor no `localStorage` e submeter ou consultar métricas em nome de outro perfil, o que invalida este modelo para cenários de exames formais (Avaliação Sumativa).
