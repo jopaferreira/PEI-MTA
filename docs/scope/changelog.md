@@ -112,7 +112,7 @@
 
 ## Sem. 14 · 9–13 jun
 
-**Feito:** Implementação de testes unitários automatizados (`pytest`) com 100% de sucesso. Introdução de distratores inteligentes (mapeamento de erros comuns) e justificações pedagógicas dinâmicas. Implementação de um Recomendador Pedagógico no Dashboard. 
+**Feito:** Implementação de testes unitários automatizados (`pytest`) com 100% de sucesso. Introdução de distratores inteligentes (mapeamento de erros comuns) e justificações pedagógicas dinâmicas. Implementação do Módulo de Sugestões de Estudo no Dashboard.
 **Bloqueou:** Nada.
 **Próxima semana:** Recolha de evidências visuais dos testes funcionais (capturas de ecrã) e estruturação e redação do Capítulo 4 do Relatório Final.
 
@@ -120,9 +120,9 @@
 
 ## Sem. 15 · 16–20 jun · PREP. DEFESA
 
-**Feito:**  
-**Bloqueou:**  
-**Próxima semana:**
+**Feito:** Redação do Relatório Final, otimização e compactação de capturas de ecrã redundantes, uniformização de terminologia e consolidação dos Registos de Decisão Arquitetural (ADR-001 a ADR-005).
+**Bloqueou:** Nada.
+**Próxima semana:** Submissão formal do projeto (código-fonte e relatório definitivo) e preparação para a defesa pública da UC.
 
 ---
 
