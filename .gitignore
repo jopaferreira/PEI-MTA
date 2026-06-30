@@ -12,3 +12,4 @@ teoria_musical.db
 # IDEs
 .vscode/
 .idea/
+.cspell/custom-dictionary-workspace.txt
